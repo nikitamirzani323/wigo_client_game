@@ -18,6 +18,7 @@
   let clockmachine = "";
 
   let field_maxlength_bet = length
+  let field_bet = engine_minbet
   let field_nomor = ""
 
 
@@ -30,7 +31,7 @@
 
   var x = setInterval(function() {
     engine_time = engine_time - 1;
-    if (engine_time < 0) {
+    if (engine_time < 1) {
       clearInterval(x);
     }
   }, 1000);
@@ -39,16 +40,38 @@
         setInterval(updateClock, 1000);
        
   }
+  const call_buttonbet = (e) => {
+    switch(e){
+      case "min":
+        field_bet = engine_minbet
+        break;
+      case "max":
+        field_bet = engine_maxbet
+        break;
+      case "1/2":
+        field_bet = engine_minbet + (parseInt(engine_minbet)*0.5);
+        break;
+      case "2":
+        field_bet = engine_minbet + (parseInt(engine_minbet)*2);
+        break;
+    }
+  };
 </script>
 <main class="container mx-auto px-2 mt-5 text-base-content glass xl:rounded-box xl:mt-7 max-w-screen-xl bg-opacity-60 pb-5 h-fit lg:h-full">
   <section class="flex-col w-full p-2 rounded-md ">
     <img class="w-[150px]" src="https://i.imgur.com/PNSe1ov.png" alt="" srcset="">
     <section class="flex justify-between w-full">
-      <h1 class="text-2xl font-bold ">
-        #{engine_invoice} <br />
-        {engine_time} S 
-      </h1>
-      <div>
+      <section class="flex-col  font-bold  w-1/2 rounded-md select-none">
+        <center>
+          <div class="text-2xl">
+            #{engine_invoice} 
+          </div>
+          <div class="text-[50px] pt-1">
+            {engine_time} S 
+          </div>
+        </center>
+      </section>
+      <section class="w-full">
         <p class="w-full text-xs lg:text-sm text-right select-none">
           Asia/Jakarta <br />
           {clockmachine}  WIB (+7)<br>
@@ -58,7 +81,7 @@
         <div class="w-full text-xs lg:text-sm text-right select-none">
           CREDIT : IDR <span class="link-accent" style="--value:15;">{new Intl.NumberFormat().format(client_credit)}</span>
         </div>
-      </div>
+      </section>
     </section>
     <section class="grid w-full gap-2 mt-10">
       <div class="flex w-full bg-base-300">
@@ -76,12 +99,22 @@
           type="text" 
           placeholder="Bet" 
           maxlength="7"
-          value="{engine_minbet}">
+          value="{field_bet}">
           <div class="flex gap-2 w-full justify-end py-1 mr-2">
-            <button class="btn btn-sm btn-active">Min</button>
-            <button class="btn btn-sm btn-active">Max</button>
-            <button class="btn btn-sm btn-active">1/2</button>
-            <button class="btn btn-sm btn-active">x2</button>
+            <button on:click={() => {
+                  call_buttonbet("min");
+                }}
+              class="btn btn-sm btn-active">Min</button>
+            <button on:click={() => {
+                call_buttonbet("max");
+              }}
+              class="btn btn-sm btn-active">Max</button>
+            <button on:click={() => {
+                call_buttonbet("1/2");
+              }} class="btn btn-sm btn-active">1/2</button>
+            <button on:click={() => {
+                call_buttonbet("2");
+            }} class="btn btn-sm btn-active">x2</button>
           </div>
       </div>
       
