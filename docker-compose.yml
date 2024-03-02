@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  frontend-wigo:
+    container_name: frontend-wigo
+    image: frontend-wigo:0.0.1
+    build: .
+    volumes:
+    - ./svelte:/app/svelte
+    ports:
+      - 1116:1116
+    restart: always
