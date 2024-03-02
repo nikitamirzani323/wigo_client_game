@@ -60,9 +60,14 @@
           return e.target.value = parseInt(e.target.value);
       }
     }
+
+    let list_invoice = [
+        {invoice_id:"2024030100001",invoice_date:"2024-03-01 05:00",invoice_bet:"500",invoice_win:"0",invoice_nomor:"21",invoice_status:"LOSE"},
+        {invoice_id:"2024030100002",invoice_date:"2024-03-01 05:20",invoice_bet:"500",invoice_win:"2500",invoice_nomor:"88",invoice_status:"WIN"},
+    ]
   </script>
  
-<section class="glass bg-opacity-60 xl:rounded-box">
+<section class="glass bg-opacity-60 rounded-box">
     <section class="flex-col w-full p-2 rounded-md ">
     <img class="w-[150px]" src="https://i.imgur.com/PNSe1ov.png" alt="" srcset="">
     <section class="flex justify-between w-full">
@@ -101,11 +106,11 @@
         <div class="flex w-full bg-base-300">
             <span class="pt-2 ml-2 text-xl text-green-500">Rp</span>
             <input on:keyup={handleKeyboard_number}
-            bind:value={field_bet}  
-            class="w-1/2 h-10 p-2 text-2xl ml-1 bg-base-300 link-accent focus:outline-none"
-            type="text" 
-            placeholder="Bet" 
-            maxlength="7">
+                bind:value={field_bet}  
+                class="w-1/2 h-10 p-2 text-2xl ml-1 bg-base-300 link-accent focus:outline-none"
+                type="text" 
+                placeholder="Bet" 
+                maxlength="7">
             <div class="flex gap-2 w-full justify-end py-1 mr-2">
                 <button on:click={() => {
                     call_buttonbet("min");
@@ -137,9 +142,39 @@
     </section>
     </section>
 </section>
-<section class="flex gap-2 mt-4">
-    <button class="btn ">Taruhan Saya</button>
-    <button class="btn ">Riwayat</button>
+<section class="flex-col gap-2 mt-4 p-2 glass bg-opacity-60 rounded-md">
+    <div class="flex gap-2">
+        <button class="btn ">Taruhan Saya</button>
+        <button class="btn ">Riwayat</button>
+    </div>
+    <section class="  mt-4 p-2">
+        <table class="table table-xs w-full " >
+            <thead class="sticky top-0">
+                <tr>
+                    <th width="5%" class="text-xs text-center align-top">STATUS</th>
+                    <th width="5%" class="text-xs text-left align-top">INVOICE</th>
+                    <th width="5%" class="text-xs text-center align-top">DATE</th>
+                    <th width="*" class="text-xs text-center align-top">NOMOR</th>
+                    <th width="10%" class="text-xs text-right align-top">BET</th>
+                    <th width="10%" class="text-xs text-right align-top">WIN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each list_invoice as rec}
+                <tr>
+                  <td class="text-xs  text-center whitespace-nowrap align-top">
+                    <span class="{rec.invoice_status_css} p-1 text-xs lg:text-sm  uppercase  rounded-lg w-20 ">{rec.invoice_status}</span>
+                  </td>
+                  <td class="text-xs  text-left whitespace-nowrap align-top">{rec.invoice_id}</td>
+                  <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoice_date}</td>
+                  <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoice_nomor}</td>
+                  <td class="text-xs text-right  whitespace-nowrap align-top link-accent {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoice_bet)}</td>
+                  <td class="text-xs text-right  whitespace-nowrap align-top link-secondary {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoice_win)}</td>
+                </tr>
+                {/each}
+            </tbody>
+        </table>
+    </section>
 </section>
  
   
