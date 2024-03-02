@@ -41,23 +41,33 @@ func Init() *fiber.App {
 		c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 			fmt.Println("WRITER")
 			var i int
+			id_invoice := 1
 			time_data := 30
-
+			time_sleep := 20
+			status := "LOCK"
+			invoice := "20240301"
+			invoice = invoice + strconv.Itoa(id_invoice)
 			for {
 				i++
-
+				msg := ""
 				if time_data < 1 {
-					time_data = 30
+					status = "LOCK"
+					time_sleep = time_sleep - 1
+					if time_sleep < 1 {
+						time_data = 30
+						time_sleep = 20
+						id_invoice = id_invoice + 1
+						invoice = invoice + strconv.Itoa(id_invoice)
+					}
+					msg = fmt.Sprintf("%s|%s|%s", strconv.Itoa(time_data), invoice, status)
 				} else {
+					status = "OPEN"
+					msg = fmt.Sprintf("%s|%s|%s", strconv.Itoa(time_data), invoice, status)
 					time_data = time_data - 1
-					invoice := "2024030100001"
 
-					msg := fmt.Sprintf("%s|%s", strconv.Itoa(time_data), invoice)
-
-					fmt.Fprintf(w, "data: Message: %s\n\n", msg)
-					fmt.Println(msg)
 				}
-
+				fmt.Fprintf(w, "data: Message: %s\n\n", msg)
+				fmt.Println(msg)
 				err := w.Flush()
 				if err != nil {
 					fmt.Printf("Error while flushing: %v. Closing http connection.\n", err)

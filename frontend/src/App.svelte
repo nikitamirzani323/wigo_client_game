@@ -23,6 +23,7 @@
   let client_name = "";
   let engine_time = 0;
   let engine_invoice = "";
+  let engine_status = "LOCK";
 
   async function initTimezone() {
     const res = await fetch(path_api+"api/healthz");
@@ -67,9 +68,12 @@
     let text_final = data_final.split("|");
     let data_final_time = text_final[0]
     let data_final_invoice = text_final[1]
+    let data_final_status = text_final[2]
     // console.log(text_final[0])
     engine_time = data_final_time;
     engine_invoice = data_final_invoice;
+    engine_status = data_final_status;
+    
   };
   
 </script>
@@ -78,6 +82,7 @@
   {#if flag_game}
   <Home 
     {engine_time}  
-    {engine_invoice}  />
+    {engine_invoice}  
+    {engine_status}  />
   {/if}
 </main>
