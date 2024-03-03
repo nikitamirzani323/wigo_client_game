@@ -3,9 +3,11 @@ package router
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -40,42 +42,50 @@ func Init() *fiber.App {
 
 		c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 			fmt.Println("WRITER")
-			var i int
-			id_invoice := 1
-			time_data := 30
-			time_sleep := 20
-			status := "LOCK"
-			invoice := "20240301"
-			invoice = invoice + strconv.Itoa(id_invoice)
-			for {
-				i++
-				msg := ""
-				if time_data < 1 {
-					status = "LOCK"
-					time_sleep = time_sleep - 1
-					if time_sleep < 1 {
-						time_data = 30
-						time_sleep = 20
-						id_invoice = id_invoice + 1
-						invoice = invoice + strconv.Itoa(id_invoice)
-					}
-					msg = fmt.Sprintf("%s|%s|%s", strconv.Itoa(time_data), invoice, status)
-				} else {
-					status = "OPEN"
-					msg = fmt.Sprintf("%s|%s|%s", strconv.Itoa(time_data), invoice, status)
-					time_data = time_data - 1
 
-				}
-				fmt.Fprintf(w, "data: Message: %s\n\n", msg)
-				fmt.Println(msg)
-				err := w.Flush()
+			// var i int
+			// id_invoice := 1
+			// time_data := 30
+			// time_sleep := 20
+			// status := "LOCK"
+			// invoice := "20240301"
+			// invoice = invoice + strconv.Itoa(id_invoice)
+
+			dbHost := os.Getenv("DB_REDIS_HOST") + ":" + os.Getenv("DB_REDIS_PORT")
+			dbPass := os.Getenv("DB_REDIS_PASSWORD")
+			dbName, _ := strconv.Atoi(os.Getenv("DB_REDIS_NAME"))
+
+			rdb := redis.NewClient(&redis.Options{
+				Addr:     dbHost,
+				Password: dbPass,
+				DB:       dbName,
+			})
+
+			resultredis := rdb.Subscribe("", "payload")
+
+			for {
+				msg, err := resultredis.ReceiveMessage()
 				if err != nil {
+					panic(err)
+				}
+
+				fmt.Println("Received message from " + msg.Payload + " channel.")
+				// data_pubsub := strings.Split(msg.Payload, ":")
+
+				msg_sse := msg.Payload
+
+				fmt.Fprintf(w, "data: Message: %s\n\n", msg_sse)
+				fmt.Println(msg_sse)
+				err_sse := w.Flush()
+				if err_sse != nil {
 					fmt.Printf("Error while flushing: %v. Closing http connection.\n", err)
 
 					break
 				}
 				time.Sleep(2 * time.Second)
+
 			}
+
 		}))
 
 		return nil

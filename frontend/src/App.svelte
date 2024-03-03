@@ -64,15 +64,18 @@
   source.onmessage = function(event) {
     let text_dasar = event.data;
     let text_result = text_dasar.split(":");
-    let data_final = text_result[1];
-    let text_final = data_final.split("|");
-    let data_final_time = text_final[0]
-    let data_final_invoice = text_final[1]
-    let data_final_status = text_final[2]
-    // console.log(text_final[0])
-    engine_time = data_final_time;
-    engine_invoice = data_final_invoice;
-    engine_status = data_final_status;
+    let text_final = text_result[1].replace(`"`,"")
+    let text_finalreplace = text_final.replace(`"`,"")
+    let text_finalsplit = text_finalreplace.split("|");
+    // let text_finalsplit2 = text_finalsplit.split("|");
+    console.log(text_finalsplit)
+    let data_invoice = text_finalsplit[0].replace(` `,"");
+    let data_time = text_finalsplit[1];
+    let data_status = text_finalsplit[3];
+  
+    engine_time = data_time;
+    engine_invoice = data_invoice;
+    engine_status = data_status;
     
   };
   
