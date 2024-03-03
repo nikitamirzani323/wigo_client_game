@@ -93,12 +93,10 @@
             } else if (json.status == 403) {
                 alert(json.message);
             } else {
-                if(json.message == "Succes"){
-                    field_bet = engine_minbet
-                    field_nomor = ""
-                    alert(json.message);
-                    fetch_invoiceall()
-                }
+                field_bet = engine_minbet
+                field_nomor = ""
+                alert(json.message);
+                fetch_invoiceall()
             }
         }else{
             alert(msg_err)
