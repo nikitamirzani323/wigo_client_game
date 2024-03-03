@@ -13,6 +13,8 @@
     export let engine_invoice = ""
     export let engine_status = "LOCK"
   
+    let client_company = "nuke"
+    let client_username = "developer"
     let client_timezone = "Asia/Jakarta"
     let client_name = "Developer";
     let client_ipaddress = "127.127.127.127";
@@ -20,13 +22,19 @@
     
     let engine_minbet = 500
     let engine_maxbet = 2000000
+    let engine_multiplier = 5.2
     let clockmachine = "";
     
     let flag_btnbuy = false;
     let field_maxlength_bet = length
     let field_bet = engine_minbet
     let field_nomor = ""
-  
+    
+    let list_invoice = []
+    let list_result = []
+    let flag_listinvoice = true;
+    let flag_listresult = false;
+
     function updateClock() {
       let endtime = dayjs().tz(client_timezone).format("DD MMM YYYY | HH:mm:ss");
       clockmachine = endtime;
@@ -37,11 +45,155 @@
   
     $: {
         setInterval(updateClock, 1000);
-        // if(parseInt(engine_time) < parseInt(1)){
-        //     flag_btnbuy = false;
-        // }else{
-        //     flag_btnbuy = true;
-        // }
+        fetch_invoiceall()
+    }
+    async function call_bayar() {
+        let flag = true;
+        let msg_err = ""
+        let prize2d = field_nomor.length;
+        alert(prize2d)
+        if(field_nomor == ""){
+            flag = false
+            msg_err = "Nomor wajib diisi"
+        }
+        if (prize2d.toString() == "1") {
+            flag = false
+            msg_err = "Nomor minimal 2 digit"
+        }
+        if(field_bet == ""){
+            flag = false
+            msg_err = "Bet wajib diisi"
+        }
+        if(parseInt(field_bet) < parseInt(engine_minbet)){
+            flag = false
+            msg_err = "Minimal Bet " + engine_minbet
+        }
+        if(parseInt(field_bet) > parseInt(engine_maxbet)){
+            flag = false
+            msg_err = "Maximal Bet " + engine_maxbet
+        }
+        if(flag){
+            const res = await fetch(path_api+"api/savetransaksi", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    transaksidetail_company: client_company,
+                    transaksidetail_idtransaksi: engine_invoice,
+                    transaksidetail_username: client_username,
+                    transaksidetail_nomor: field_nomor,
+                    transaksidetail_bet: parseInt(field_bet),
+                    transaksidetail_multiplier: parseFloat(engine_multiplier),
+                }),
+            });
+            const json = await res.json();
+            if (json.status === 400) {
+                // logout();
+            } else if (json.status == 403) {
+                alert(json.message);
+            } else {
+                if(json.message == "Succes"){
+                    field_bet = engine_minbet
+                    field_nomor = ""
+                    alert(json.message);
+                    fetch_invoiceall()
+                }
+            }
+        }else{
+            alert(msg_err)
+        }
+        
+    }
+    async function fetch_listresult() {
+        flag_listinvoice = false;
+        flag_listresult = true;
+        list_result = []
+        const res = await fetch(path_api+"api/listresult", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                invoice_company: client_company,
+            }),
+        });
+        const json = await res.json();
+        if (json.status === 400) {
+        
+        } else if (json.status == 403) {
+            alert(json.message);
+        } else {
+        let record = json.record;
+        if (record != null) {
+            for (var i = 0; i < record.length; i++) {
+                list_result = [
+                    ...list_result,
+                    {
+                        result_invoice: record[i]["result_invoice"],
+                        result_date: record[i]["result_date"],
+                        result_result: record[i]["result_result"],
+                    },
+                ];
+            }
+        }
+        }
+    }
+    async function fetch_invoiceall() {
+        flag_listinvoice = true;
+        flag_listresult = false;
+        list_invoice = []
+        const res = await fetch(path_api+"api/listinvoice", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                invoice_company: client_company,
+                Invoice_username: client_username,
+            }),
+        });
+        const json = await res.json();
+        if (json.status === 400) {
+        
+        } else if (json.status == 403) {
+            alert(json.message);
+        } else {
+        let record = json.record;
+        if (record != null) {
+            for (var i = 0; i < record.length; i++) {
+                let status_css = ""
+                
+                switch(record[i]["invoiceclient_status"]){
+                    case "LOSE":
+                        status_css = "bg-primary text-white";
+                        break;
+                    case "WIN":
+                        status_css = "bg-success text-white";
+                        break;
+                    case "RUNNING":
+                        status_css = "bg-accent text-white";
+                        break;
+                }
+
+               
+                list_invoice = [
+                    ...list_invoice,
+                    {
+                        invoiceclient_id: record[i]["invoiceclient_id"],
+                        invoiceclient_date: record[i]["invoiceclient_date"],
+                        invoiceclient_result: record[i]["invoiceclient_result"],
+                        invoiceclient_nomor: record[i]["invoiceclient_nomor"],
+                        invoiceclient_bet: record[i]["invoiceclient_bet"],
+                        invoiceclient_multiplier: record[i]["invoiceclient_multiplier"],
+                        invoiceclient_win: record[i]["invoiceclient_win"],
+                        invoiceclient_status: record[i]["invoiceclient_status"],
+                        invoiceclient_status_css: status_css,
+                    },
+                ];
+            }
+        }
+        }
     }
     const call_buttonbet = (e) => {
       switch(e){
@@ -59,6 +211,12 @@
           break;
       }
     };
+    const call_allinvoice = () => {
+        fetch_invoiceall()
+    };
+    const call_listresult = () => {
+        fetch_listresult()
+    };
     const handleKeyboard_number = (e) => {
       if (isNaN(parseInt(e.target.value))) {
           return e.target.value = "";
@@ -67,10 +225,7 @@
       }
     }
 
-    let list_invoice = [
-        {invoice_id:"2024030100001",invoice_date:"2024-03-01 05:00",invoice_bet:"500",invoice_win:"0",invoice_nomor:"21",invoice_status:"LOSE"},
-        {invoice_id:"2024030100002",invoice_date:"2024-03-01 05:20",invoice_bet:"500",invoice_win:"2500",invoice_nomor:"88",invoice_status:"WIN"},
-    ]
+    
   </script>
  
 <section class="glass bg-opacity-60 rounded-md">
@@ -80,7 +235,7 @@
         <section class="flex-col  font-bold  w-1/2 rounded-md select-none">
         <center>
             <div class="text-2xl">
-            #{engine_invoice} 
+            {engine_invoice} 
             </div>
             <div class="text-[50px] pt-1">
             {engine_time} S 
@@ -138,7 +293,9 @@
         </div>
         
         {#if engine_status == "OPEN"}
-        <button class="btn btn-success">
+        <button on:click={() => {
+                    call_bayar();
+            }}  class="btn btn-success">
             Bayar 
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -150,36 +307,68 @@
 </section>
 <section class="flex-col gap-2 mt-4 p-2 glass bg-opacity-60 rounded-md">
     <div class="flex gap-2">
-        <button class="btn ">Taruhan Saya</button>
-        <button class="btn ">Riwayat</button>
+        <button on:click={() => {
+            call_allinvoice();
+         }}  class="btn ">Taruhan Saya</button>
+        <button on:click={() => {
+            call_listresult();
+         }}  class="btn ">Riwayat</button>
     </div>
-    <section class="  mt-4 p-2">
-        <table class="table table-xs w-full " >
-            <thead class="sticky top-0">
-                <tr>
-                    <th width="5%" class="text-xs text-center align-top">STATUS</th>
-                    <th width="5%" class="text-xs text-left align-top">INVOICE</th>
-                    <th width="5%" class="text-xs text-center align-top">DATE</th>
-                    <th width="*" class="text-xs text-center align-top">NOMOR</th>
-                    <th width="10%" class="text-xs text-right align-top">BET</th>
-                    <th width="10%" class="text-xs text-right align-top">WIN</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each list_invoice as rec}
-                <tr>
-                  <td class="text-xs  text-center whitespace-nowrap align-top">
-                    <span class="{rec.invoice_status_css} p-1 text-xs lg:text-sm  uppercase  rounded-lg w-20 ">{rec.invoice_status}</span>
-                  </td>
-                  <td class="text-xs  text-left whitespace-nowrap align-top">{rec.invoice_id}</td>
-                  <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoice_date}</td>
-                  <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoice_nomor}</td>
-                  <td class="text-xs text-right  whitespace-nowrap align-top link-accent {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoice_bet)}</td>
-                  <td class="text-xs text-right  whitespace-nowrap align-top link-secondary {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoice_win)}</td>
-                </tr>
-                {/each}
-            </tbody>
-        </table>
+    <section class="  mt-4 p-1">
+        {#if flag_listinvoice}
+        <div class="overflow-auto h-[500px]  scrollbar-thin scrollbar-thumb-green-100">
+            <table class="table table-xs  w-full " >
+                <thead class="sticky top-0">
+                    <tr class="border-none">
+                        <th width="5%" class="text-xs text-center align-top">STATUS</th>
+                        <th width="5%" class="text-xs text-left align-top">INVOICE</th>
+                        <th width="5%" class="text-xs text-center align-top">DATE</th>
+                        <th width="10%" class="text-xs text-center align-top">RESULT</th>
+                        <th width="*" class="text-xs text-center align-top">NOMOR</th>
+                        <th width="10%" class="text-xs text-right align-top">BET</th>
+                        <th width="10%" class="text-xs text-right align-top">WIN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each list_invoice as rec}
+                    <tr class="border-none">
+                    <td class="text-xs  text-center whitespace-nowrap align-top">
+                        <span class="{rec.invoiceclient_status_css} p-1 text-xs lg:text-sm  uppercase  rounded-lg w-20 ">{rec.invoiceclient_status}</span>
+                    </td>
+                    <td class="text-xs  text-left whitespace-nowrap align-top border-b-transparent">{rec.invoiceclient_id}</td>
+                    <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_date}</td>
+                    <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_result}</td>
+                    <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_nomor}</td>
+                    <td class="text-xs text-right  whitespace-nowrap align-top link-accent {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoiceclient_bet)}</td>
+                    <td class="text-xs text-right  whitespace-nowrap align-top link-secondary {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoiceclient_win)}</td>
+                    </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </div>
+        {/if}
+        {#if flag_listresult}
+        <div class="overflow-auto h-[500px]  ">
+            <table class="table table-xs w-full " >
+                <thead class="sticky top-0">
+                    <tr class="border-none">
+                        <th width="5%" class="text-xs text-left align-top">INVOICE</th>
+                        <th width="5%" class="text-xs text-center align-top">DATE</th>
+                        <th width="10%" class="text-xs text-center align-top">RESULT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each list_result as rec}
+                    <tr class="border-none">
+                        <td class="text-xs  text-left whitespace-nowrap align-top border-b-transparent">{rec.result_invoice}</td>
+                        <td class="text-xs  text-center whitespace-nowrap align-top">{rec.result_date}</td>
+                        <td class="text-xs  text-center whitespace-nowrap align-top">{rec.result_result}</td>
+                    </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </div>
+        {/if}
     </section>
 </section>
  

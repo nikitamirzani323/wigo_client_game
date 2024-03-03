@@ -29,10 +29,9 @@ func Init() *fiber.App {
 	})
 	app.Get("api/healthz", controller.HealthCheck)
 	app.Post("api/checktoken", controller.CheckToken)
+	app.Post("api/listresult", controller.Listresult)
 	app.Post("api/listinvoice", controller.Listinvoice)
-	app.Post("api/listinvoicedetail", controller.Listinvoicedetail)
-	app.Post("api/savetransaksi", controller.SaveTransaksi)
-	app.Post("api/savetransaksidetail", controller.SaveTransaksiDetail)
+	app.Post("api/savetransaksi", controller.SaveTransaksiDetail)
 
 	app.Get("/sse", func(c *fiber.Ctx) error {
 		c.Set("Content-Type", "text/event-stream")
@@ -42,14 +41,6 @@ func Init() *fiber.App {
 
 		c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 			fmt.Println("WRITER")
-
-			// var i int
-			// id_invoice := 1
-			// time_data := 30
-			// time_sleep := 20
-			// status := "LOCK"
-			// invoice := "20240301"
-			// invoice = invoice + strconv.Itoa(id_invoice)
 
 			dbHost := os.Getenv("DB_REDIS_HOST") + ":" + os.Getenv("DB_REDIS_PORT")
 			dbPass := os.Getenv("DB_REDIS_PASSWORD")
@@ -69,20 +60,20 @@ func Init() *fiber.App {
 					panic(err)
 				}
 
-				fmt.Println("Received message from " + msg.Payload + " channel.")
+				// fmt.Println("Received message from " + msg.Payload + " channel.")
 				// data_pubsub := strings.Split(msg.Payload, ":")
 
 				msg_sse := msg.Payload
 
 				fmt.Fprintf(w, "data: Message: %s\n\n", msg_sse)
-				fmt.Println(msg_sse)
+				// fmt.Println(msg_sse)
 				err_sse := w.Flush()
 				if err_sse != nil {
 					fmt.Printf("Error while flushing: %v. Closing http connection.\n", err)
 
 					break
 				}
-				time.Sleep(2 * time.Second)
+				time.Sleep(1 * time.Second)
 
 			}
 

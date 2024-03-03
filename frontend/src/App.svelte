@@ -22,7 +22,7 @@
   let client_username = "";
   let client_name = "";
   let engine_time = 0;
-  let engine_invoice = "";
+  let engine_invoice = "Memuat...";
   let engine_status = "LOCK";
 
   async function initTimezone() {
@@ -68,15 +68,20 @@
     let text_finalreplace = text_final.replace(`"`,"")
     let text_finalsplit = text_finalreplace.split("|");
     // let text_finalsplit2 = text_finalsplit.split("|");
-    console.log(text_finalsplit)
+    // console.log(text_finalsplit)
     let data_invoice = text_finalsplit[0].replace(` `,"");
     let data_time = text_finalsplit[1];
     let data_status = text_finalsplit[3];
-  
-    engine_time = data_time;
-    engine_invoice = data_invoice;
-    engine_status = data_status;
     
+    if(data_invoice != ""){
+      engine_invoice = data_invoice;
+    }else{
+      engine_invoice = "Memuat...";
+    }
+
+    engine_time = data_time;
+    
+    engine_status = data_status;
   };
   
 </script>
@@ -84,6 +89,7 @@
 
   {#if flag_game}
   <Home 
+    {path_api}  
     {engine_time}  
     {engine_invoice}  
     {engine_status}  />
