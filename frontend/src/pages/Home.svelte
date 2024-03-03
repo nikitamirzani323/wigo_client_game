@@ -71,6 +71,10 @@
             flag = false
             msg_err = "Maximal Bet " + engine_maxbet
         }
+        if(parseInt(field_bet) > parseInt(client_credit)){
+            flag = false
+            msg_err = "Credit tidak cukup "
+        }
         if(flag){
             const res = await fetch(path_api+"api/savetransaksi", {
                 method: "POST",
@@ -92,6 +96,7 @@
             } else if (json.status == 403) {
                 alert(json.message);
             } else {
+                client_credit = parseInt(client_credit) - parseInt(field_bet)
                 field_bet = engine_minbet
                 field_nomor = ""
                 alert(json.message);
