@@ -51,7 +51,6 @@
         let flag = true;
         let msg_err = ""
         let prize2d = field_nomor.length;
-        alert(prize2d)
         if(field_nomor == ""){
             flag = false
             msg_err = "Nomor wajib diisi"
