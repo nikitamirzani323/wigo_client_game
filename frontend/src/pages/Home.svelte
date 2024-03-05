@@ -242,7 +242,21 @@
           return e.target.value = parseInt(e.target.value);
       }
     }
-
+    const handleKeyboard_number_blur = (e) => {
+        let temp_number = e.target.value
+        if (isNaN(parseInt(e.target.value))) {
+            return e.target.value = "";
+        }else{
+            if(parseInt(temp_number) < parseInt(engine_minbet)){
+                return e.target.value = parseInt(engine_minbet);
+            }else{
+                if(parseInt(temp_number) > parseInt(engine_maxbet)){
+                    return e.target.value = parseInt(engine_maxbet);
+                }
+            }
+            
+        }
+    }
     
   </script>
  
@@ -307,7 +321,9 @@
             <div class="flex-col">
             <div class="flex w-full bg-base-300">
                 <span class="pt-2 ml-2 text-xl text-green-500">Rp</span>
-                <input on:keyup={handleKeyboard_number}
+                <input 
+                    on:keyup={handleKeyboard_number}
+                    on:blur={handleKeyboard_number_blur}
                     bind:value={field_bet}  
                     class="w-1/2 h-10 p-2 text-2xl ml-1 bg-base-300 link-accent focus:outline-none"
                     type="text" 
