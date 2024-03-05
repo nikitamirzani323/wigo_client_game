@@ -95,3 +95,13 @@
     {engine_status}  />
   {/if}
 </main>
+<footer class="footer footer-center p-4 text-base-content mt-1 text-center select-none">
+  <div class="grid">
+    <p class="text-xs lg:text-sm text-center">
+      {version}
+      <br />
+      PowerBy
+    </p>
+    <img src="https://i.imgur.com/PNSe1ov.png" alt="SDSB TANGKAS" class="w-24 lg:w-28">
+  </div>
+</footer>

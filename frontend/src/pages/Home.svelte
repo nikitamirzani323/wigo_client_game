@@ -12,7 +12,9 @@
     export let engine_time = 0
     export let engine_invoice = ""
     export let engine_status = "LOCK"
-  
+    
+    let flag_toast = false;
+    let toast_message = "";
     let client_company = "nuke"
     let client_username = "developer"
     let client_timezone = "Asia/Jakarta"
@@ -41,11 +43,16 @@
       
     }
   
+    function toast_hidden() {
+        flag_toast = false;
+    }
+
     
   
     $: {
         setInterval(updateClock, 1000);
         fetch_invoiceall()
+        
     }
     async function call_bayar() {
         let flag = true;
@@ -99,13 +106,15 @@
                 client_credit = parseInt(client_credit) - parseInt(field_bet)
                 field_bet = engine_minbet
                 field_nomor = ""
-                alert(json.message);
                 fetch_invoiceall()
+                flag_toast = true
+                toast_message = json.message
             }
         }else{
-            alert(msg_err)
+            flag_toast = true
+            toast_message = msg_err
         }
-        
+        setTimeout(toast_hidden, 3000);
     }
     async function fetch_listresult() {
         flag_listinvoice = false;
@@ -219,6 +228,13 @@
     const call_listresult = () => {
         fetch_listresult()
     };
+    const handleKeyboard_nomor = (e) => {
+      if (isNaN(parseInt(e.target.value))) {
+          return e.target.value = "";
+      }else{
+          return e.target.value = e.target.value;
+      }
+    }
     const handleKeyboard_number = (e) => {
       if (isNaN(parseInt(e.target.value))) {
           return e.target.value = "";
@@ -230,91 +246,114 @@
     
   </script>
  
-<section class="glass bg-opacity-60 rounded-md">
+<section class="glass bg-opacity-60 rounded-lg">
     <section class="flex-col w-full p-2 rounded-md ">
-    <img class="w-[150px]" src="https://i.imgur.com/PNSe1ov.png" alt="" srcset="">
-    <section class="flex justify-between w-full">
-        <section class="flex-col  font-bold  w-1/2 rounded-md select-none">
         <center>
-            <div class="text-2xl">
-            {engine_invoice} 
-            </div>
-            <div class="text-[50px] pt-1">
-            {engine_time} S 
-            </div>
+            <img class="w-[150px]" src="https://i.imgur.com/PNSe1ov.png" alt="" srcset="">
         </center>
+        <section class="hidden lg:flex justify-between w-full bg-base-100 p-1 rounded-md select-none mt-1">
+            <section class="flex-col text-center  font-bold  w-1/2  ">
+                <div class="flex-col">
+                    <div class="text-lg">PERIODE</div>
+                    <div class="link-accent text-sm">{engine_invoice}</div>
+                </div>
+                <div class="flex-col mt-2">
+                    <div class="text-lg">WAKTU</div>
+                    <div class="link-accent text-sm">{engine_time} S </div>
+                </div>
+            </section>
+            <section class="w-full ">
+                <p class="w-full text-xs lg:text-sm text-right select-none">
+                    Asia/Jakarta <br />
+                    {clockmachine}  WIB (+7)<br>
+                    {client_name} <br />
+                    {client_ipaddress}
+                </p>
+                <div class="w-full text-xs lg:text-sm text-right select-none">
+                    CREDIT : IDR <span class="link-accent" style="--value:15;">{new Intl.NumberFormat().format(client_credit)}</span>
+                </div>
+            </section>
         </section>
-        <section class="w-full">
-        <p class="w-full text-xs lg:text-sm text-right select-none">
-            Asia/Jakarta <br />
-            {clockmachine}  WIB (+7)<br>
-            {client_name} <br />
-            {client_ipaddress}
-        </p>
-        <div class="w-full text-xs lg:text-sm text-right select-none">
-            CREDIT : IDR <span class="link-accent" style="--value:15;">{new Intl.NumberFormat().format(client_credit)}</span>
-        </div>
+        <section class="flex-col lg:hidden w-full ">
+            <section class="flex justify-between  w-full  bg-base-100 p-2 rounded-md select-none mt-1">
+                <div class="flex-col w-full text-center">
+                    <div class="text-sm">PERIODE</div>
+                    <div class="link-accent text-xs">{engine_invoice}</div>
+                </div>
+                <div class="flex-col w-full text-center">
+                    <div class="text-sm">WAKTU</div>
+                    <div class="link-accent text-xs">{engine_time} S </div>
+                </div>
+            </section>
+            <section class="flex w-full bg-base-100 p-2 rounded-md select-none mt-1">
+                <p class="w-full text-xs lg:text-sm text-left select-none">
+                    Asia/Jakarta <br />
+                    {clockmachine}  WIB (+7)<br>
+                    {client_name} <br />
+                    {client_ipaddress}<br />
+                    CREDIT : IDR <span class="link-accent" style="--value:15;">{new Intl.NumberFormat().format(client_credit)}</span>
+                </p>
+            </section>
         </section>
-    </section>
-    <section class="grid w-full gap-2 mt-10">
-        <div class="flex w-full bg-base-300">
-        <input on:keyup={handleKeyboard_number}
-            bind:value={field_nomor}  
-            class="w-full text-[50px] text-center link-accent bg-base-300 focus:outline-none"
-            type="text" 
-            placeholder="2D" 
-            maxlength="2">
-        </div>
-        <div class="flex-col">
-        <div class="flex w-full bg-base-300">
-            <span class="pt-2 ml-2 text-xl text-green-500">Rp</span>
-            <input on:keyup={handleKeyboard_number}
-                bind:value={field_bet}  
-                class="w-1/2 h-10 p-2 text-2xl ml-1 bg-base-300 link-accent focus:outline-none"
+        <section class="grid w-full gap-2 mt-2">
+            <div class="flex w-full bg-base-300">
+            <input on:keyup={handleKeyboard_nomor}
+                bind:value={field_nomor}  
+                class="w-full text-[50px] text-center link-accent bg-base-300 focus:outline-none"
                 type="text" 
-                placeholder="Bet" 
-                maxlength="7">
-            <div class="flex gap-2 w-full justify-end py-1 mr-2">
-                <button on:click={() => {
-                    call_buttonbet("min");
-                    }}
-                class="btn btn-sm btn-active">Min</button>
-                <button on:click={() => {
-                    call_buttonbet("max");
-                }}
-                class="btn btn-sm btn-active">Max</button>
-                <button on:click={() => {
-                    call_buttonbet("1/2");
-                }} class="btn btn-sm btn-active">1/2</button>
-                <button on:click={() => {
-                    call_buttonbet("2");
-                }} class="btn btn-sm btn-active">x2</button>
+                placeholder="2D" 
+                maxlength="2">
             </div>
-        </div>
-        <span class="pl-11 -pt-1 text-[11px] link-accent">{new Intl.NumberFormat().format(field_bet)}</span>
-        </div>
-        
-        {#if engine_status == "OPEN"}
-        <button on:click={() => {
-                    call_bayar();
-            }}  class="btn btn-success">
-            Bayar 
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-            </svg>
-        </button>
-        {/if}
-    </section>
+            <div class="flex-col">
+            <div class="flex w-full bg-base-300">
+                <span class="pt-2 ml-2 text-xl text-green-500">Rp</span>
+                <input on:keyup={handleKeyboard_number}
+                    bind:value={field_bet}  
+                    class="w-1/2 h-10 p-2 text-2xl ml-1 bg-base-300 link-accent focus:outline-none"
+                    type="text" 
+                    placeholder="Bet" 
+                    maxlength="7">
+                <div class="hidden lg:flex gap-2 w-full justify-end py-1 mr-2">
+                    <button on:click={() => {
+                        call_buttonbet("min");
+                        }}
+                    class="btn btn-sm btn-active btn-sm">Min</button>
+                    <button on:click={() => {
+                        call_buttonbet("max");
+                    }}
+                    class="btn btn-sm btn-active btn-sm">Max</button>
+                    <button on:click={() => {
+                        call_buttonbet("1/2");
+                    }} class="btn btn-sm btn-active btn-sm">1/2</button>
+                    <button on:click={() => {
+                        call_buttonbet("2");
+                    }} class="btn btn-sm btn-active btn-sm">x2</button>
+                </div>
+            </div>
+            <span class="pl-11 -pt-1 text-[11px] link-accent">{new Intl.NumberFormat().format(field_bet)}</span>
+            </div>
+            
+            {#if engine_status == "OPEN"}
+            <button on:click={() => {
+                        call_bayar();
+                }}  class="btn btn-success">
+                Bayar 
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+            </button>
+            {/if}
+        </section>
     </section>
 </section>
 <section class="flex-col gap-2 mt-4 p-2 glass bg-opacity-60 rounded-md">
     <div class="flex gap-2">
         <button on:click={() => {
             call_allinvoice();
-         }}  class="btn ">Taruhan Saya</button>
+         }}  class="btn btn-sm">Taruhan Saya</button>
         <button on:click={() => {
             call_listresult();
-         }}  class="btn ">Riwayat</button>
+         }}  class="btn btn-sm">Riwayat</button>
     </div>
     <section class="  mt-4 p-1">
         {#if flag_listinvoice}
@@ -334,15 +373,15 @@
                 <tbody>
                     {#each list_invoice as rec}
                     <tr class="border-none">
-                    <td class="text-xs  text-center whitespace-nowrap align-top">
-                        <span class="{rec.invoiceclient_status_css} p-1 text-xs lg:text-sm  uppercase  rounded-lg w-20 ">{rec.invoiceclient_status}</span>
-                    </td>
-                    <td class="text-xs  text-left whitespace-nowrap align-top border-b-transparent">{rec.invoiceclient_id}</td>
-                    <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_date}</td>
-                    <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_result}</td>
-                    <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_nomor}</td>
-                    <td class="text-xs text-right  whitespace-nowrap align-top link-accent {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoiceclient_bet)}</td>
-                    <td class="text-xs text-right  whitespace-nowrap align-top link-secondary {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoiceclient_win)}</td>
+                        <td class="text-xs  text-center whitespace-nowrap align-top">
+                            <span class="{rec.invoiceclient_status_css} p-1 text-xs lg:text-sm  uppercase  rounded-lg w-20 ">{rec.invoiceclient_status}</span>
+                        </td>
+                        <td class="text-xs  text-left whitespace-nowrap align-top border-b-transparent">{rec.invoiceclient_id}</td>
+                        <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_date}</td>
+                        <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_result}</td>
+                        <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_nomor}</td>
+                        <td class="text-xs text-right  whitespace-nowrap align-top link-accent {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoiceclient_bet)}</td>
+                        <td class="text-xs text-right  whitespace-nowrap align-top link-secondary {rec.invoice_winlose_css}">{new Intl.NumberFormat().format(rec.invoiceclient_win)}</td>
                     </tr>
                     {/each}
                 </tbody>
@@ -373,5 +412,11 @@
         {/if}
     </section>
 </section>
- 
+{#if flag_toast}
+    <div class="toast toast-top toast-center">
+        <div class="alert ">
+            <span>{toast_message}</span>
+        </div>
+    </div>
+{/if}
   
