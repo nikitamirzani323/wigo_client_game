@@ -63,11 +63,11 @@
     async function call_bayar() {
         let flag = true;
         let msg_err = ""
-        let mergednomor = [...bet_multiple, ...bet_multiple2, ...bet_multiple3, ...bet_multiple4]
-        let total_mergednomor = mergednomor.length
-        let total_bayar = parseInt(total_mergednomor)*parseInt(field_bet)
-        console.log(mergednomor.toString())
-        console.log("total nomor : ",total_mergednomor)
+        // let mergednomor = [...bet_multiple, ...bet_multiple2, ...bet_multiple3, ...bet_multiple4]
+        let total_bet_multiple = bet_multiple.length
+        let total_bayar = parseInt(total_bet_multiple)*parseInt(field_bet)
+        console.log(bet_multiple.toString())
+        console.log("total nomor : ",total_bet_multiple)
         console.log("total bayar : ",total_bayar)
 
         if(parseInt(engine_time) < 5){
@@ -98,9 +98,9 @@
         // flag = false;
         if(flag){
             flag_btnbuy = false;
-            for(let i=0;i<total_mergednomor;i++){
+            for(let i=0;i<total_bet_multiple;i++){
                 const data = {
-                    nomor: mergednomor[i],
+                    nomor: bet_multiple[i],
                     bet: parseInt(field_bet),
                     multiplier: parseFloat(engine_multiplier)
                 };
@@ -237,11 +237,8 @@
         }
     }
    
-    let flag_page1 = true;
-    let flag_page2 = false;
-    let flag_page3 = false;
-    let flag_page4 = false;
    
+
     const call_pagenomor = (e) => {
         switch(e){
             case "page1":
@@ -270,7 +267,7 @@
                 break;
         }
     };
-  
+    
     const call_buttonbet = (e) => {
       switch(e){
         case "min":
@@ -357,11 +354,11 @@
             <section class="flex justify-between  w-full  bg-base-100 p-2 rounded-md select-none mt-1">
                 <div class="flex-col w-full text-center">
                     <div class="text-sm">PERIODE</div>
-                    <div class="link-accent text-xs">{engine_invoice}</div>
+                    <div class="link-accent text-lg">{engine_invoice}</div>
                 </div>
                 <div class="flex-col w-full text-center">
                     <div class="text-sm">WAKTU</div>
-                    <div class="link-accent text-xs">{engine_time} S </div>
+                    <div class="link-accent text-lg">{engine_time} S </div>
                 </div>
             </section>
             <section class="flex w-full bg-base-100 p-2 rounded-md select-none mt-1">
@@ -384,26 +381,12 @@
                     maxlength="2">
             </div>
             
-            <div class="flex justify-center gap-2">
-                <button on:click={() => {
-                    call_pagenomor("page1");
-                 }}  class="btn btn-xs btn-info"><img src="hdmi-fill.svg" ></button>
-                <button on:click={() => {
-                    call_pagenomor("page2");
-                 }}  class="btn btn-xs btn-info"><img src="hdmi-fill.svg" ></button>
-                <button on:click={() => {
-                    call_pagenomor("page3");
-                 }}  class="btn btn-xs btn-info"><img src="hdmi-fill.svg" ></button>
-                 <button on:click={() => {
-                    call_pagenomor("page4");
-                 }}  class="btn btn-xs btn-info"><img src="hdmi-fill.svg" ></button>
-            </div>
-            {#if flag_page1}
-                <div class="grid grid-cols-5 lg:grid-cols-5 gap-2">
+            <div class="h-[350px] w-full overflow-auto">
+                <div class="grid grid-cols-6 sm:grid-cols-10 md:grid-cols-10 xl:grid-cols-10 lg:grid-cols-10 gap-1 w-full">
                     <label class="swap">
                         <input bind:group={bet_multiple} type="checkbox" value="00" />
                         <div class="swap-on btn btn-outline">00</div>
-                        <div class="swap-off btn  ">00</div>
+                        <div class="swap-off btn ">00</div>
                     </label>
                     <label class="swap">
                         <input bind:group={bet_multiple} type="checkbox" value="01" />
@@ -525,395 +508,387 @@
                         <div class="swap-on btn btn-outline">24</div>
                         <div class="swap-off btn ">24</div>
                     </label>
-                </div>
-            {/if}
-            {#if flag_page2}
-                <div class="grid grid-cols-5 lg:grid-cols-5 gap-2">
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="25" />
+                        <input bind:group={bet_multiple} type="checkbox" value="25" />
                         <div class="swap-on btn btn-outline">25</div>
                         <div class="swap-off btn ">25</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="26" />
+                        <input bind:group={bet_multiple} type="checkbox" value="26" />
                         <div class="swap-on btn btn-outline">26</div>
                         <div class="swap-off btn ">26</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="27" />
+                        <input bind:group={bet_multiple} type="checkbox" value="27" />
                         <div class="swap-on btn btn-outline">27</div>
                         <div class="swap-off btn ">27</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="28" />
+                        <input bind:group={bet_multiple} type="checkbox" value="28" />
                         <div class="swap-on btn btn-outline">28</div>
                         <div class="swap-off btn ">28</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="29" />
+                        <input bind:group={bet_multiple} type="checkbox" value="29" />
                         <div class="swap-on btn btn-outline">29</div>
                         <div class="swap-off btn ">29</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="30" />
+                        <input bind:group={bet_multiple} type="checkbox" value="30" />
                         <div class="swap-on btn btn-outline">30</div>
                         <div class="swap-off btn ">30</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="31" />
+                        <input bind:group={bet_multiple} type="checkbox" value="31" />
                         <div class="swap-on btn btn-outline">31</div>
                         <div class="swap-off btn ">31</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="32" />
+                        <input bind:group={bet_multiple} type="checkbox" value="32" />
                         <div class="swap-on btn btn-outline">32</div>
                         <div class="swap-off btn ">32</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="33" />
+                        <input bind:group={bet_multiple} type="checkbox" value="33" />
                         <div class="swap-on btn btn-outline">33</div>
                         <div class="swap-off btn ">33</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="34" />
+                        <input bind:group={bet_multiple} type="checkbox" value="34" />
                         <div class="swap-on btn btn-outline">34</div>
                         <div class="swap-off btn ">34</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="35" />
+                        <input bind:group={bet_multiple} type="checkbox" value="35" />
                         <div class="swap-on btn btn-outline">35</div>
                         <div class="swap-off btn ">35</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="36" />
+                        <input bind:group={bet_multiple} type="checkbox" value="36" />
                         <div class="swap-on btn btn-outline">36</div>
                         <div class="swap-off btn ">36</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="37" />
+                        <input bind:group={bet_multiple} type="checkbox" value="37" />
                         <div class="swap-on btn btn-outline">37</div>
                         <div class="swap-off btn ">37</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="38" />
+                        <input bind:group={bet_multiple} type="checkbox" value="38" />
                         <div class="swap-on btn btn-outline">38</div>
                         <div class="swap-off btn ">38</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="39" />
+                        <input bind:group={bet_multiple} type="checkbox" value="39" />
                         <div class="swap-on btn btn-outline">39</div>
                         <div class="swap-off btn ">39</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="40" />
+                        <input bind:group={bet_multiple} type="checkbox" value="40" />
                         <div class="swap-on btn btn-outline">40</div>
                         <div class="swap-off btn ">40</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="41" />
+                        <input bind:group={bet_multiple} type="checkbox" value="41" />
                         <div class="swap-on btn btn-outline">41</div>
                         <div class="swap-off btn ">41</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="42" />
+                        <input bind:group={bet_multiple} type="checkbox" value="42" />
                         <div class="swap-on btn btn-outline">42</div>
                         <div class="swap-off btn ">42</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="43" />
+                        <input bind:group={bet_multiple} type="checkbox" value="43" />
                         <div class="swap-on btn btn-outline">43</div>
                         <div class="swap-off btn ">43</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="44" />
+                        <input bind:group={bet_multiple} type="checkbox" value="44" />
                         <div class="swap-on btn btn-outline">44</div>
                         <div class="swap-off btn ">44</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="45" />
+                        <input bind:group={bet_multiple} type="checkbox" value="45" />
                         <div class="swap-on btn btn-outline">45</div>
                         <div class="swap-off btn ">45</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="46" />
+                        <input bind:group={bet_multiple} type="checkbox" value="46" />
                         <div class="swap-on btn btn-outline">46</div>
                         <div class="swap-off btn ">46</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="47" />
+                        <input bind:group={bet_multiple} type="checkbox" value="47" />
                         <div class="swap-on btn btn-outline">47</div>
                         <div class="swap-off btn ">47</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="48" />
+                        <input bind:group={bet_multiple} type="checkbox" value="48" />
                         <div class="swap-on btn btn-outline">48</div>
                         <div class="swap-off btn ">48</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple2} type="checkbox" value="49" />
+                        <input bind:group={bet_multiple} type="checkbox" value="49" />
                         <div class="swap-on btn btn-outline">49</div>
                         <div class="swap-off btn ">49</div>
                     </label>
-                </div>
-            {/if}
-            {#if flag_page3}
-                <div class="grid grid-cols-5 lg:grid-cols-5 gap-2">
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="50" />
+                        <input bind:group={bet_multiple} type="checkbox" value="50" />
                         <div class="swap-on btn btn-outline">50</div>
                         <div class="swap-off btn ">50</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="51" />
+                        <input bind:group={bet_multiple} type="checkbox" value="51" />
                         <div class="swap-on btn btn-outline">51</div>
                         <div class="swap-off btn ">51</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="52" />
+                        <input bind:group={bet_multiple} type="checkbox" value="52" />
                         <div class="swap-on btn btn-outline">52</div>
                         <div class="swap-off btn ">52</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="53" />
+                        <input bind:group={bet_multiple} type="checkbox" value="53" />
                         <div class="swap-on btn btn-outline">53</div>
                         <div class="swap-off btn ">53</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="54" />
+                        <input bind:group={bet_multiple} type="checkbox" value="54" />
                         <div class="swap-on btn btn-outline">54</div>
                         <div class="swap-off btn ">54</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="55" />
+                        <input bind:group={bet_multiple} type="checkbox" value="55" />
                         <div class="swap-on btn btn-outline">55</div>
                         <div class="swap-off btn ">55</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="56" />
+                        <input bind:group={bet_multiple} type="checkbox" value="56" />
                         <div class="swap-on btn btn-outline">56</div>
                         <div class="swap-off btn ">56</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="57" />
+                        <input bind:group={bet_multiple} type="checkbox" value="57" />
                         <div class="swap-on btn btn-outline">57</div>
                         <div class="swap-off btn ">57</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="58" />
+                        <input bind:group={bet_multiple} type="checkbox" value="58" />
                         <div class="swap-on btn btn-outline">58</div>
                         <div class="swap-off btn ">58</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="59" />
+                        <input bind:group={bet_multiple} type="checkbox" value="59" />
                         <div class="swap-on btn btn-outline">59</div>
                         <div class="swap-off btn ">59</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="60" />
+                        <input bind:group={bet_multiple} type="checkbox" value="60" />
                         <div class="swap-on btn btn-outline">60</div>
                         <div class="swap-off btn ">60</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="61" />
+                        <input bind:group={bet_multiple} type="checkbox" value="61" />
                         <div class="swap-on btn btn-outline">61</div>
                         <div class="swap-off btn ">61</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="62" />
+                        <input bind:group={bet_multiple} type="checkbox" value="62" />
                         <div class="swap-on btn btn-outline">62</div>
                         <div class="swap-off btn ">62</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="63" />
+                        <input bind:group={bet_multiple} type="checkbox" value="63" />
                         <div class="swap-on btn btn-outline">63</div>
                         <div class="swap-off btn ">63</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="64" />
+                        <input bind:group={bet_multiple} type="checkbox" value="64" />
                         <div class="swap-on btn btn-outline">64</div>
                         <div class="swap-off btn ">64</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="65" />
+                        <input bind:group={bet_multiple} type="checkbox" value="65" />
                         <div class="swap-on btn btn-outline">65</div>
                         <div class="swap-off btn ">65</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="66" />
+                        <input bind:group={bet_multiple} type="checkbox" value="66" />
                         <div class="swap-on btn btn-outline">66</div>
                         <div class="swap-off btn ">66</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="67" />
+                        <input bind:group={bet_multiple} type="checkbox" value="67" />
                         <div class="swap-on btn btn-outline">67</div>
                         <div class="swap-off btn ">67</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="68" />
+                        <input bind:group={bet_multiple} type="checkbox" value="68" />
                         <div class="swap-on btn btn-outline">68</div>
                         <div class="swap-off btn ">68</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="69" />
+                        <input bind:group={bet_multiple} type="checkbox" value="69" />
                         <div class="swap-on btn btn-outline">69</div>
                         <div class="swap-off btn ">69</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="70" />
+                        <input bind:group={bet_multiple} type="checkbox" value="70" />
                         <div class="swap-on btn btn-outline">70</div>
                         <div class="swap-off btn ">70</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="71" />
+                        <input bind:group={bet_multiple} type="checkbox" value="71" />
                         <div class="swap-on btn btn-outline">71</div>
                         <div class="swap-off btn ">71</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="72" />
+                        <input bind:group={bet_multiple} type="checkbox" value="72" />
                         <div class="swap-on btn btn-outline">72</div>
                         <div class="swap-off btn ">72</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="73" />
+                        <input bind:group={bet_multiple} type="checkbox" value="73" />
                         <div class="swap-on btn btn-outline">73</div>
                         <div class="swap-off btn ">73</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple3} type="checkbox" value="74" />
+                        <input bind:group={bet_multiple} type="checkbox" value="74" />
                         <div class="swap-on btn btn-outline">74</div>
                         <div class="swap-off btn ">74</div>
                     </label>
-                </div>
-            {/if}
-            {#if flag_page4}
-                <div class="grid grid-cols-5 lg:grid-cols-5 gap-2">
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="75" />
+                        <input bind:group={bet_multiple} type="checkbox" value="75" />
                         <div class="swap-on btn btn-outline">75</div>
                         <div class="swap-off btn ">75</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="76" />
+                        <input bind:group={bet_multiple} type="checkbox" value="76" />
                         <div class="swap-on btn btn-outline">76</div>
                         <div class="swap-off btn ">76</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="77" />
+                        <input bind:group={bet_multiple} type="checkbox" value="77" />
                         <div class="swap-on btn btn-outline">77</div>
                         <div class="swap-off btn ">77</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="78" />
+                        <input bind:group={bet_multiple} type="checkbox" value="78" />
                         <div class="swap-on btn btn-outline">78</div>
                         <div class="swap-off btn ">78</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="79" />
+                        <input bind:group={bet_multiple} type="checkbox" value="79" />
                         <div class="swap-on btn btn-outline">79</div>
                         <div class="swap-off btn ">79</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="80" />
+                        <input bind:group={bet_multiple} type="checkbox" value="80" />
                         <div class="swap-on btn btn-outline">80</div>
                         <div class="swap-off btn ">80</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="81" />
+                        <input bind:group={bet_multiple} type="checkbox" value="81" />
                         <div class="swap-on btn btn-outline">81</div>
                         <div class="swap-off btn ">81</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="82" />
+                        <input bind:group={bet_multiple} type="checkbox" value="82" />
                         <div class="swap-on btn btn-outline">82</div>
                         <div class="swap-off btn ">82</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="83" />
+                        <input bind:group={bet_multiple} type="checkbox" value="83" />
                         <div class="swap-on btn btn-outline">83</div>
                         <div class="swap-off btn ">83</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="84" />
+                        <input bind:group={bet_multiple} type="checkbox" value="84" />
                         <div class="swap-on btn btn-outline">84</div>
                         <div class="swap-off btn ">84</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="85" />
+                        <input bind:group={bet_multiple} type="checkbox" value="85" />
                         <div class="swap-on btn btn-outline">60</div>
                         <div class="swap-off btn ">60</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="86" />
+                        <input bind:group={bet_multiple} type="checkbox" value="86" />
                         <div class="swap-on btn btn-outline">61</div>
                         <div class="swap-off btn ">61</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="87" />
+                        <input bind:group={bet_multiple} type="checkbox" value="87" />
                         <div class="swap-on btn btn-outline">62</div>
                         <div class="swap-off btn ">62</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="88" />
+                        <input bind:group={bet_multiple} type="checkbox" value="88" />
                         <div class="swap-on btn btn-outline">88</div>
                         <div class="swap-off btn ">88</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="89" />
+                        <input bind:group={bet_multiple} type="checkbox" value="89" />
                         <div class="swap-on btn btn-outline">89</div>
                         <div class="swap-off btn ">89</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="90" />
+                        <input bind:group={bet_multiple} type="checkbox" value="90" />
                         <div class="swap-on btn btn-outline">90</div>
                         <div class="swap-off btn ">90</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="91" />
+                        <input bind:group={bet_multiple} type="checkbox" value="91" />
                         <div class="swap-on btn btn-outline">91</div>
                         <div class="swap-off btn ">91</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="92" />
+                        <input bind:group={bet_multiple} type="checkbox" value="92" />
                         <div class="swap-on btn btn-outline">92</div>
                         <div class="swap-off btn ">92</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="93" />
+                        <input bind:group={bet_multiple} type="checkbox" value="93" />
                         <div class="swap-on btn btn-outline">93</div>
                         <div class="swap-off btn ">93</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="94" />
+                        <input bind:group={bet_multiple} type="checkbox" value="94" />
                         <div class="swap-on btn btn-outline">94</div>
                         <div class="swap-off btn ">94</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="95" />
+                        <input bind:group={bet_multiple} type="checkbox" value="95" />
                         <div class="swap-on btn btn-outline">95</div>
                         <div class="swap-off btn ">95</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="96" />
+                        <input bind:group={bet_multiple} type="checkbox" value="96" />
                         <div class="swap-on btn btn-outline">96</div>
                         <div class="swap-off btn ">96</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="97" />
+                        <input bind:group={bet_multiple} type="checkbox" value="97" />
                         <div class="swap-on btn btn-outline">97</div>
                         <div class="swap-off btn ">97</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="98" />
+                        <input bind:group={bet_multiple} type="checkbox" value="98" />
                         <div class="swap-on btn btn-outline">98</div>
                         <div class="swap-off btn ">98</div>
                     </label>
                     <label class="swap">
-                        <input bind:group={bet_multiple4} type="checkbox" value="99" />
+                        <input bind:group={bet_multiple} type="checkbox" value="99" />
                         <div class="swap-on btn btn-outline">99</div>
                         <div class="swap-off btn ">99</div>
                     </label>
                 </div>
-            {/if}
+            </div>
+            
+            
+           
+           
             <div class="flex-col">
                 <div class="flex w-full bg-base-300">
                     <span class="pt-2 ml-2 text-xl text-green-500">Rp</span>
@@ -960,7 +935,7 @@
     </section>
 </section>
 <section class="flex-col gap-2 mt-4 p-2 glass bg-opacity-60 rounded-md">
-    <div class="flex gap-2">
+    <div class="flex justify-center gap-2">
         <button on:click={() => {
             call_allinvoice();
          }}  class="btn btn-sm">Taruhan Saya</button>
