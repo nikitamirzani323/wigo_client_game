@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"log"
 	"time"
 
@@ -208,12 +209,11 @@ func Listinvoice(c *fiber.Ctx) error {
 }
 func SaveTransaksiDetail(c *fiber.Ctx) error {
 	type payload_savetransaksidetail struct {
-		Transaksidetail_company     string  `json:"transaksidetail_company" `
-		Transaksidetail_idtransaksi string  `json:"transaksidetail_idtransaksi" `
-		Transaksidetail_username    string  `json:"transaksidetail_username" `
-		Transaksidetail_nomor       string  `json:"transaksidetail_nomor" `
-		Transaksidetail_bet         int     `json:"transaksidetail_bet" `
-		Transaksidetail_multiplier  float64 `json:"transaksidetail_multiplier" `
+		Transaksidetail_company     string          `json:"transaksidetail_company" `
+		Transaksidetail_idtransaksi string          `json:"transaksidetail_idtransaksi" `
+		Transaksidetail_username    string          `json:"transaksidetail_username" `
+		Transaksidetail_totalbet    int             `json:"transaksidetail_totalbet" `
+		Transaksidetail_listdatabet json.RawMessage `json:"transaksidetail_listdatabet" `
 	}
 	hostname := c.Hostname()
 	client := new(payload_savetransaksidetail)
@@ -237,9 +237,8 @@ func SaveTransaksiDetail(c *fiber.Ctx) error {
 			"transaksidetail_company":     client.Transaksidetail_company,
 			"transaksidetail_idtransaksi": client.Transaksidetail_idtransaksi,
 			"transaksidetail_username":    client.Transaksidetail_username,
-			"transaksidetail_nomor":       client.Transaksidetail_nomor,
-			"transaksidetail_bet":         client.Transaksidetail_bet,
-			"transaksidetail_multiplier":  client.Transaksidetail_multiplier,
+			"transaksidetail_totalbet":    client.Transaksidetail_totalbet,
+			"transaksidetail_listdatabet": string(client.Transaksidetail_listdatabet),
 		}).
 		Post(PATH + "api/savetransaksidetail")
 	if err != nil {

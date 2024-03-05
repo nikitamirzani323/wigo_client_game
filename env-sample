@@ -1,6 +1,6 @@
 PORT=1116
-#PATH_API="http://172.23.0.2:1115/"
-PATH_API="http://128.199.241.112:1115/"
+PATH_API="http://172.23.0.2:1115/"
+#PATH_API="http://128.199.241.112:1115/"
 
 
 # REDIS settings:
