@@ -350,12 +350,12 @@
         <section class="hidden lg:flex justify-between w-full bg-base-100 p-1 rounded-md select-none mt-1">
             <section class="flex-col text-center  font-bold  w-1/2  ">
                 <div class="flex-col">
-                    <div class="text-lg">PERIODE</div>
-                    <div class="link-accent text-sm">{engine_invoice}</div>
+                    <div class="text-lg lg:text-xl">PERIODE</div>
+                    <div class="link-accent text-sm lg:text-lg">{engine_invoice}</div>
                 </div>
                 <div class="flex-col mt-2">
-                    <div class="text-lg">WAKTU</div>
-                    <div class="link-accent text-sm">{engine_time} S </div>
+                    <div class="text-lg lg:text-xl">WAKTU</div>
+                    <div class="link-accent text-sm lg:text-lg">{engine_time} S </div>
                 </div>
             </section>
             <section class="w-full ">

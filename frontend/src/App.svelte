@@ -63,24 +63,20 @@
   var source = new EventSource(path_api+"sse");
   source.onmessage = function(event) {
     let text_dasar = event.data;
-    let text_result = text_dasar.split(":");
-    let text_final = text_result[1].replace(`"`,"")
-    let text_finalreplace = text_final.replace(`"`,"")
-    let text_finalsplit = text_finalreplace.split("|");
-    // let text_finalsplit2 = text_finalsplit.split("|");
-    // console.log(text_finalsplit)
-    let data_invoice = text_finalsplit[0].replace(` `,"");
+    let text_replace1 = text_dasar.replace(`"`,"")
+    let text_replace2 = text_replace1.replace(`"`,"")
+    let text_finalsplit = text_replace2.split("|");
+    let data_invoice = text_finalsplit[0];
     let data_time = text_finalsplit[1];
-    let data_status = text_finalsplit[3];
-    
+    let data_status = text_finalsplit[2];
+    let maintenance_status = text_finalsplit[2];
+
     if(data_invoice != ""){
       engine_invoice = data_invoice;
     }else{
       engine_invoice = "Memuat...";
     }
-
     engine_time = data_time;
-    
     engine_status = data_status;
   };
   

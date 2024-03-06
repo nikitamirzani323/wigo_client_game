@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/go-redis/redis"
 	"github.com/gofiber/fiber/v2"
@@ -65,15 +64,15 @@ func Init() *fiber.App {
 
 				msg_sse := msg.Payload
 
-				fmt.Fprintf(w, "data: Message: %s\n\n", msg_sse)
-				// fmt.Println(msg_sse)
+				fmt.Fprintf(w, "data: %s\n\n", msg_sse)
+				fmt.Println(msg_sse)
 				err_sse := w.Flush()
 				if err_sse != nil {
 					fmt.Printf("Error while flushing: %v. Closing http connection.\n", err)
 
 					break
 				}
-				time.Sleep(1 * time.Second)
+				// time.Sleep(1 * time.Second)
 
 			}
 
