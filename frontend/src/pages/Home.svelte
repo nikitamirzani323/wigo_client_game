@@ -35,26 +35,71 @@
     let list_invoice = []
     let list_result = []
     let keranjang = [];
-    let nomor_global = 0;
     let flag_listinvoice = true;
     let flag_listresult = false;
     let bet_multiple = ""
-    let bet_multiple2 = ""
-    let bet_multiple3 = ""
-    let bet_multiple4 = ""
+    let isModalMinBet = false;
+    let client_listbet = [
+        {id:500,val:"500"},
+        {id:1000,val:"1000"},
+        {id:1500,val:"1500"},
+        {id:2000,val:"2000"},
+        {id:2500,val:"2500"},
+        {id:3000,val:"3000"},
+        {id:3500,val:"3500"},
+        {id:4000,val:"4000"},
+        {id:4500,val:"4500"},
+        {id:5000,val:"5000"},
+        {id:5500,val:"5500"},
+        {id:6000,val:"6000"},
+        {id:6500,val:"6500"},
+        {id:7000,val:"7000"},
+        {id:7500,val:"7500"},
+        {id:8000,val:"8000"},
+        {id:8500,val:"8500"},
+        {id:9000,val:"9000"},
+        {id:9500,val:"9500"},
+        {id:10000,val:"10000"},
+        {id:15000,val:"15000"},
+        {id:20000,val:"20000"},
+        {id:25000,val:"25000"},
+        {id:30000,val:"30000"},
+        {id:35000,val:"35000"},
+        {id:40000,val:"40000"},
+        {id:45000,val:"45000"},
+        {id:50000,val:"50000"},
+        {id:55000,val:"55000"},
+        {id:60000,val:"60000"},
+        {id:65000,val:"65000"},
+        {id:70000,val:"70000"},
+        {id:75000,val:"75000"},
+        {id:80000,val:"80000"},
+        {id:85000,val:"85000"},
+        {id:90000,val:"90000"},
+        {id:95000,val:"95000"},
+        {id:100000,val:"100000"},
+        {id:200000,val:"200000"},
+        {id:300000,val:"300000"},
+        {id:400000,val:"400000"},
+        {id:500000,val:"500000"},
+        {id:600000,val:"600000"},
+        {id:700000,val:"700000"},
+        {id:800000,val:"800000"},
+        {id:900000,val:"900000"},
+        {id:1000000,val:"1000000"},
+        {id:1500000,val:"1500000"},
+        {id:2000000,val:"2000000"},
+        {id:2500000,val:"2500000"},
+    ]
 
     function updateClock() {
       let endtime = dayjs().tz(client_timezone).format("DD MMM YYYY | HH:mm:ss");
       clockmachine = endtime;
-      
     }
   
     function toast_hidden() {
         flag_toast = false;
     }
-
-    
-  
     $: {
         setInterval(updateClock, 1000);
         fetch_invoiceall()
@@ -135,9 +180,6 @@
                 flag_toast = true
                 toast_message = json.message
                 bet_multiple = ""
-                bet_multiple2 = ""
-                bet_multiple3 = ""
-                bet_multiple4 = ""
                 flag_btnbuy = true;
             }
         }else{
@@ -238,34 +280,12 @@
     }
    
    
-
-    const call_pagenomor = (e) => {
-        switch(e){
-            case "page1":
-                flag_page1 = true;
-                flag_page2 = false;
-                flag_page3 = false;
-                flag_page4 = false;
-                break;
-            case "page2":
-                flag_page1 = false;
-                flag_page2 = true;
-                flag_page3 = false;
-                flag_page4 = false;
-                break;
-            case "page3":
-                flag_page1 = false;
-                flag_page2 = false;
-                flag_page3 = true;
-                flag_page4 = false;
-                break;
-            case "page4":
-                flag_page1 = false;
-                flag_page2 = false;
-                flag_page3 = false;
-                flag_page4 = true;
-                break;
-        }
+    const handleclick_listminbet = () => {
+        isModalMinBet = true
+    };
+    const handle_minbet = (e) => {
+        field_bet = e
+        isModalMinBet = false
     };
     
     const call_buttonbet = (e) => {
@@ -885,39 +905,14 @@
                     </label>
                 </div>
             </div>
-            
-            
-           
-           
             <div class="flex-col">
-                <div class="flex w-full bg-base-300">
-                    <span class="pt-2 ml-2 text-xl text-green-500">Rp</span>
-                    <input 
-                        on:keyup={handleKeyboard_number}
-                        on:blur={handleKeyboard_number_blur}
-                        bind:value={field_bet}  
-                        class="w-1/2 h-10 p-2 text-2xl ml-1 bg-base-300 link-accent focus:outline-none"
-                        type="text" 
-                        placeholder="Bet" 
-                        maxlength="7">
-                    <div class="hidden lg:flex gap-2 w-full justify-end py-1 mr-2">
-                        <button on:click={() => {
-                            call_buttonbet("min");
-                            }}
-                        class="btn btn-sm btn-active btn-sm">Min</button>
-                        <button on:click={() => {
-                            call_buttonbet("max");
-                        }}
-                        class="btn btn-sm btn-active btn-sm">Max</button>
-                        <button on:click={() => {
-                            call_buttonbet("1/2");
-                        }} class="btn btn-sm btn-active btn-sm">1/2</button>
-                        <button on:click={() => {
-                            call_buttonbet("2");
-                        }} class="btn btn-sm btn-active btn-sm">x2</button>
+                <div on:click={() => {
+                    handleclick_listminbet();
+                  }} class="flex w-full h-[70px] justify-center bg-base-300 cursor-pointer">
+                    <div class="w-full p-2 text-5xl bg-base-300 link-accent text-center">
+                        {new Intl.NumberFormat().format(field_bet)}
                     </div>
                 </div>
-                <span class="pl-11 -pt-1 text-[11px] link-accent">{new Intl.NumberFormat().format(field_bet)}</span>
             </div>
             {#if engine_status == "OPEN"}
                 {#if flag_btnbuy}
@@ -1007,4 +1002,23 @@
         </div>
     </div>
 {/if}
+
+<input type="checkbox" id="my-modal-information" class="modal-toggle" bind:checked={isModalMinBet}>
+<div class="modal" on:click|self={()=>isModalMinBet = false}>
+    <div class="modal-box relative w-11/12 max-w-lg h-1/2 lg:h-2/3 overflow-auto select-none">
+        <label for="my-modal-information" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+        <h3 class="text-xs lg:text-sm font-bold -mt-2">COIN BET</h3>
+        <div class="h-fit overflow-auto  mt-2" >
+            <div class="grid grid-cols-5 mt-5 gap-2 justify-self-center">
+              {#each client_listbet as rec}
+                <div on:click={() => {
+                    handle_minbet(rec.id);
+                  }} 
+                  class="btn btn-xs lg:btn-sm btn-outline btn-success cursor-pointer">{new Intl.NumberFormat().format(rec.val)}</div>
+              {/each}
+            </div>
+            
+        </div>
+    </div>
+</div>
   
