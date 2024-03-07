@@ -51,7 +51,7 @@ func Init() *fiber.App {
 				DB:       dbName,
 			})
 
-			resultredis := rdb.Subscribe("", "payload")
+			resultredis := rdb.Subscribe("", "payload_nuke")
 
 			for {
 				msg, err := resultredis.ReceiveMessage()
