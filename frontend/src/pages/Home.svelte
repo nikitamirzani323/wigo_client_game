@@ -595,7 +595,7 @@
         <label for="my-modal-information" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
         <h3 class="text-xs lg:text-sm font-bold -mt-2">COIN BET</h3>
         <div class="h-fit overflow-auto  mt-2" >
-            <div class="grid grid-cols-5 mt-5 gap-2 justify-self-center">
+            <div class="grid grid-cols-3 lg:grid-cols-5 mt-5 gap-2 justify-self-center">
               {#each client_listbet as rec}
                 <div on:click={() => {
                     handle_minbet(rec.id);
