@@ -109,18 +109,13 @@
     async function call_bayar() {
         let flag = true;
         let msg_err = ""
-        // let mergednomor = [...bet_multiple, ...bet_multiple2, ...bet_multiple3, ...bet_multiple4]
         let total_bet_multiple = bet_multiple.length
         let total_bayar = parseInt(total_bet_multiple)*parseInt(field_bet)
-        // console.log(bet_multiple.toString())
-        // console.log("total nomor : ",total_bet_multiple)
-        // console.log("total bayar : ",total_bayar)
-
+       
         if(parseInt(engine_time) < 5){
             flag = false
             msg_err = "Timeout"
         }
-        
         if(field_bet == ""){
             flag = false
             msg_err = "Bet wajib diisi"
@@ -129,7 +124,6 @@
             flag = false
             msg_err = "Nomor dan Bet wajib diisi"
         }
-        
         if(parseInt(field_bet) < parseInt(engine_minbet)){
             flag = false
             msg_err = "Minimal Bet " + engine_minbet
@@ -180,13 +174,11 @@
                 flag_btnbuy = true;
             } else {
                 client_credit = parseInt(client_credit) - parseInt(total_bayar)
-                field_bet = engine_minbet
-                field_nomor = ""
                 fetch_invoiceall()
                 flag_toast = true
+                flag_btnbuy = true;
                 toast_message = json.message
                 bet_multiple = ""
-                flag_btnbuy = true;
             }
         }else{
             flag_toast = true
