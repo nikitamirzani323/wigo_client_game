@@ -107,6 +107,7 @@
         
     }
     async function call_bayar() {
+        keranjang = [];
         let flag = true;
         let msg_err = ""
         let total_bet_multiple = bet_multiple.length
@@ -151,7 +152,6 @@
                 };
                 keranjang = [data, ...keranjang];
             }
-            console.log(keranjang)
 
             const res = await fetch(path_api+"api/savetransaksi", {
                 method: "POST",
@@ -179,6 +179,7 @@
                 flag_btnbuy = true;
                 toast_message = json.message
                 bet_multiple = ""
+                keranjang = [];
             }
         }else{
             flag_toast = true
@@ -289,6 +290,7 @@
     };
     
     const call_reset = () => {
+        keranjang = [];
         bet_multiple = ""
         field_bet = engine_minbet
     };

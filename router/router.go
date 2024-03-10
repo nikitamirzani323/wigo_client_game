@@ -52,7 +52,7 @@ func Init() *fiber.App {
 			})
 
 			resultredis := rdb.Subscribe("", "payload_nuke")
-
+			defer resultredis.Close()
 			for {
 				msg, err := resultredis.ReceiveMessage()
 				if err != nil {
