@@ -54,6 +54,18 @@
     let btn_besar_css = "btn"
     let btn_besar_flag = false
 
+    let btn_line1_css = "btn"
+    let btn_line1_flag = false
+    let btn_line2_css = "btn"
+    let btn_line2_flag = false
+    let btn_line3_css = "btn"
+    let btn_line3_flag = false
+    let btn_line4_css = "btn"
+    let btn_line4_flag = false
+    let btn_line5_css = "btn"
+    let btn_line5_flag = false
+
+
     function updateClock() {
       let endtime = dayjs().tz(client_timezone).format("DD MMM YYYY | HH:mm:ss");
       clockmachine = endtime;
@@ -118,6 +130,15 @@
                 }
                 if(mergeResult[i] == "KECIL" || mergeResult[i] == "BESAR"){
                     tipebet = "REDBLACK"
+                }
+                if(mergeResult[i] == "LINE1" || mergeResult[i] == "LINE2"){
+                    tipebet = "LINE"
+                }
+                if(mergeResult[i] == "LINE3" || mergeResult[i] == "LINE4"){
+                    tipebet = "LINE"
+                }
+                if(mergeResult[i] == "LINE5"){
+                    tipebet = "LINE"
                 }
                 const data = {
                     tipebet: tipebet,
@@ -281,6 +302,17 @@
         btn_kecil_flag = false
         btn_besar_css = "btn"
         btn_besar_flag = false
+
+        btn_line1_css = "btn"
+        btn_line1_flag = false
+        btn_line2_css = "btn"
+        btn_line2_flag = false
+        btn_line3_css = "btn"
+        btn_line3_flag = false
+        btn_line4_css = "btn"
+        btn_line4_flag = false
+        btn_line5_css = "btn"
+        btn_line5_flag = false
     };
     const call_allinvoice = () => {
         fetch_invoiceall()
@@ -376,6 +408,85 @@
                     btn_besar_flag = false
                     for (let i = 0; i < redblack.length; i++) { 
                         if (redblack[i] === "BESAR") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+        }
+    };
+    const handleclick_line = (e) => {
+        switch(e){
+            case "LINE1":
+                if(btn_line1_flag == false){
+                    btn_line1_css = "btn btn-outline"
+                    btn_line1_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_line1_css = "btn btn-error"
+                    btn_line1_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "LINE1") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "LINE2":
+                if(btn_line2_flag == false){
+                    btn_line2_css = "btn btn-outline"
+                    btn_line2_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_line2_css = "btn"
+                    btn_line2_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "LINE2") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "LINE3":
+                if(btn_line3_flag == false){
+                    btn_line3_css = "btn btn-outline"
+                    btn_line3_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_line3_css = "btn"
+                    btn_line3_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "LINE3") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "LINE4":
+                if(btn_line4_flag == false){
+                    btn_line4_css = "btn btn-outline"
+                    btn_line4_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_line4_css = "btn"
+                    btn_line4_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "LINE4") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "LINE5":
+                if(btn_line5_flag == false){
+                    btn_line5_css = "btn btn-outline"
+                    btn_line5_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_line5_css = "btn"
+                    btn_line5_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "LINE5") { 
                             redblack.splice(i, 1); 
                         } 
                     }
@@ -573,20 +684,20 @@
                 </div>
                 <div class="grid grid-cols-5 mt-2  gap-2">
                     <button  on:click={() => {
-                        handleclick_redblack("BLACK");
-                    }} class="{btn_ganjil_css}">LINE<br />1</button>
+                        handleclick_line("LINE1");
+                    }} class="{btn_line1_css}">LINE<br />1</button>
                     <button  on:click={() => {
-                        handleclick_redblack("BLACK");
-                    }} class="{btn_ganjil_css}">LINE<br />2</button>
+                        handleclick_line("LINE2");
+                    }} class="{btn_line2_css}">LINE<br />2</button>
                     <button  on:click={() => {
-                        handleclick_redblack("RED");
-                    }} class="{btn_ganjil_css}">LINE<br />3</button>
+                        handleclick_line("LINE3");
+                    }} class="{btn_line3_css}">LINE<br />3</button>
                     <button  on:click={() => {
-                        handleclick_redblack("GENAP");
-                    }} class="{btn_ganjil_css}">LINE<br />4</button>
+                        handleclick_line("LINE4");
+                    }} class="{btn_line4_css}">LINE<br />4</button>
                     <button  on:click={() => {
-                        handleclick_redblack("GENAP");
-                    }} class="{btn_ganjil_css}">LINE<br />5</button>
+                        handleclick_line("LINE5");
+                    }} class="{btn_line5_css}">LINE<br />5</button>
                 </div>
                 <div class="grid grid-cols-6 mt-2 sm:grid-cols-10 md:grid-cols-10 xl:grid-cols-10 lg:grid-cols-10 gap-1 w-full">
                     {#each nomor as rec}
