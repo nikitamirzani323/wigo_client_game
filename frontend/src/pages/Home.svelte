@@ -662,7 +662,7 @@
         </section>
         <section class="grid grid-cols-1 w-full gap-2 mt-2">
             <div class="h-[350px] w-full overflow-auto">
-                <div class="grid grid-cols-6 gap-2">
+                <div class="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-6 xl:grid-cols-6 lg:grid-cols-6 gap-1">
                     <button  on:click={() => {
                         handleclick_redblack("KECIL");
                     }} class="{btn_kecil_css}">KECIL</button>
@@ -682,7 +682,7 @@
                         handleclick_redblack("BESAR");
                     }} class="{btn_besar_css}">BESAR</button>
                 </div>
-                <div class="grid grid-cols-5 mt-2  gap-2">
+                <div class="grid grid-cols-5 mt-2  gap-1">
                     <button  on:click={() => {
                         handleclick_line("LINE1");
                     }} class="{btn_line1_css}">LINE<br />1</button>
