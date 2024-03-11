@@ -59,7 +59,7 @@
           client_name = json.client_name;
           client_username = json.client_username;
           client_credit = json.client_credit;
-          engine_multiplier = json.client_credit;
+          engine_multiplier = json.engine_multiplier;
           let record_listbet = json.client_listbet.record;
           // console.log(client_listbet.length)
           for (var i = 0; i < record_listbet.length; i++) {
