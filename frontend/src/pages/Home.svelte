@@ -49,6 +49,10 @@
     let btn_ganjil_flag = false
     let btn_genap_css = "btn"
     let btn_genap_flag = false
+    let btn_kecil_css = "btn"
+    let btn_kecil_flag = false
+    let btn_besar_css = "btn"
+    let btn_besar_flag = false
 
     function updateClock() {
       let endtime = dayjs().tz(client_timezone).format("DD MMM YYYY | HH:mm:ss");
@@ -107,6 +111,12 @@
             for(let i=0;i<total_bet_multiple;i++){
                 let tipebet = "ANGKA"
                 if(mergeResult[i] == "RED" || mergeResult[i] == "BLACK"){
+                    tipebet = "REDBLACK"
+                }
+                if(mergeResult[i] == "GANJIL" || mergeResult[i] == "GENAP"){
+                    tipebet = "REDBLACK"
+                }
+                if(mergeResult[i] == "KECIL" || mergeResult[i] == "BESAR"){
                     tipebet = "REDBLACK"
                 }
                 const data = {
@@ -267,6 +277,10 @@
         btn_ganjil_flag = false
         btn_genap_css = "btn"
         btn_genap_flag = false
+        btn_kecil_css = "btn"
+        btn_kecil_flag = false
+        btn_besar_css = "btn"
+        btn_besar_flag = false
     };
     const call_allinvoice = () => {
         fetch_invoiceall()
@@ -332,6 +346,36 @@
                     btn_genap_flag = false
                     for (let i = 0; i < redblack.length; i++) { 
                         if (redblack[i] === "GENAP") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "KECIL":
+                if(btn_kecil_flag == false){
+                    btn_kecil_css = "btn btn-outline"
+                    btn_kecil_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_kecil_css = "btn"
+                    btn_kecil_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "KECIL") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "BESAR":
+                if(btn_besar_flag == false){
+                    btn_besar_css = "btn btn-outline"
+                    btn_besar_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_besar_css = "btn"
+                    btn_besar_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "BESAR") { 
                             redblack.splice(i, 1); 
                         } 
                     }
@@ -445,9 +489,22 @@
  
 <section class="glass bg-opacity-60 rounded-lg">
     <section class="flex-col w-full p-2 rounded-md ">
-        <center>
-            <img class="w-[150px]" src="https://i.imgur.com/PNSe1ov.png" alt="" srcset="">
-        </center>
+        <section class="flex justify-between w-full">
+            <div class="w-full ">
+                <center>
+                    <img class="w-[150px]" src="https://i.imgur.com/PNSe1ov.png" alt="" srcset="">
+                </center>
+            </div>
+            <div class="w-1/6 lg:w-1/12">
+                <button on:click={() => {
+                    handleclick_infogame();
+                }}  class="btn btn-circle">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                </svg>
+            </button>
+            </div>
+        </section>
         <section class="hidden lg:flex justify-between w-full bg-base-100 p-1 rounded-md select-none mt-1">
             <section class="flex-col text-center  font-bold  w-1/2  ">
                 <div class="flex-col">
@@ -494,7 +551,10 @@
         </section>
         <section class="grid grid-cols-1 w-full gap-2 mt-2">
             <div class="h-[350px] w-full overflow-auto">
-                <div class="grid grid-cols-4 gap-2">
+                <div class="grid grid-cols-6 gap-2">
+                    <button  on:click={() => {
+                        handleclick_redblack("KECIL");
+                    }} class="{btn_kecil_css}">KECIL</button>
                     <button  on:click={() => {
                         handleclick_redblack("GANJIL");
                     }} class="{btn_ganjil_css}">GANJIL</button>
@@ -507,6 +567,26 @@
                     <button  on:click={() => {
                         handleclick_redblack("GENAP");
                     }} class="{btn_genap_css}">GENAP</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("BESAR");
+                    }} class="{btn_besar_css}">BESAR</button>
+                </div>
+                <div class="grid grid-cols-5 mt-2  gap-2">
+                    <button  on:click={() => {
+                        handleclick_redblack("BLACK");
+                    }} class="{btn_ganjil_css}">LINE<br />1</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("BLACK");
+                    }} class="{btn_ganjil_css}">LINE<br />2</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("RED");
+                    }} class="{btn_ganjil_css}">LINE<br />3</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("GENAP");
+                    }} class="{btn_ganjil_css}">LINE<br />4</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("GENAP");
+                    }} class="{btn_ganjil_css}">LINE<br />5</button>
                 </div>
                 <div class="grid grid-cols-6 mt-2 sm:grid-cols-10 md:grid-cols-10 xl:grid-cols-10 lg:grid-cols-10 gap-1 w-full">
                     {#each nomor as rec}
@@ -530,15 +610,7 @@
             </div>
             {#if engine_status == "OPEN"}
                 {#if flag_btnbuy}
-                    <div class="grid grid-cols-3 gap-2 w-full">
-                        <button on:click={() => {
-                                    handleclick_infogame();
-                            }}  class="btn btn-info ">
-                            Info 
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                            </svg>
-                        </button>
+                    <div class="grid grid-cols-2 gap-2 w-full">
                         <button on:click={() => {
                                     call_reset();
                             }}  class="btn btn-warning">
@@ -660,21 +732,62 @@
         <label for="my-modal-infogame" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
         <h3 class="text-xs lg:text-sm font-bold -mt-2">INFO</h3>
         <div class="h-fit overflow-auto  mt-2" >
-            <table class="table table-xs">
+            <table class="table table-xs w-full ">
                 <tr>
-                    <td width="30%">MIN BET</td>
-                    <td width="1%">:</td>
-                    <td width="*">{new Intl.NumberFormat().format(field_bet)}</td>
+                    <td width="70%" class="text-xs lg:text-sm">MIN BET</td>
+                    <td width="1%" class="text-xs lg:text-sm">:</td>
+                    <td width="*" class="text-xs lg:text-sm">{new Intl.NumberFormat().format(field_bet)}</td>
                 </tr>
                 <tr>
-                    <td>HADIAH ANGKA (00 - 99)</td>
-                    <td>:</td>
-                    <td>x 5</td>
+                    <td class="text-xs lg:text-sm">HADIAH ANGKA (00 - 99)</td>
+                    <td class="text-xs lg:text-sm">:</td>
+                    <td class="text-xs lg:text-sm">10 x</td>
                 </tr>
                 <tr>
-                    <td>HADIAH GENAP/GANJIL, RED/BLACK</td>
-                    <td>:</td>
-                    <td>x 0.95</td>
+                    <td class="text-xs lg:text-sm align-top">HADIAH BESAR/KECIL,GENAP/GANJIL, RED/BLACK</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">0.95 x</td>
+                </tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">HADIAH LINE 1,2,3,4,5</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">2 x</td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">KECIL</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">00-49</td>
+                </tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">BESAR</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">50-99</td>
+                </tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">Line 1</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">00-19</td>
+                </tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">Line 2</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">20-39</td>
+                </tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">Line 3</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">40-59</td>
+                </tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">Line 4</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">60-79</td>
+                </tr>
+                <tr>
+                    <td class="text-xs lg:text-sm align-top">Line 5</td>
+                    <td class="text-xs lg:text-sm align-top">:</td>
+                    <td class="text-xs lg:text-sm align-top">80-99</td>
                 </tr>
             </table>
             <p class="text-[12px] mt-2">
@@ -684,16 +797,26 @@
                 jika nomor anda kena, maka anda akan mendapatkan: modal + (modal * 5)
                 <br /><br />
                 Contoh :<br />
+                KASUS 1:<br />
                 Anda memasang nomor 25, dengan bet 500<br />
                 keluaran adalah nomor 25<br />
-                jadi bet anda menang <br />
+                jadi bet anda menang dari hasil Angka : 25, Line 2, Ganjil,Black <br />
                 pembayarannya adalah : modal + (modal x 5)<br />
                 500 + (500 x 5) = 3000<br />
                 anda akan mendapatkan 3000
                 <br /><br />
+                KASUS 2:<br />
                 Anda memasang nomor 10, dengan bet 500<br />
                 keluaran adalah nomor 00<br />
-                jadi bet anda kalah <br />
+                jadi bet anda kalah 
+                <br /><br />
+                KASUS 3:<br />
+                Anda memasang nomor GENAP, dengan bet 500<br />
+                keluaran adalah nomor 12<br />
+                jadi bet anda menang dari hasil Angka : 12, Line 1, Genap,Red <br />
+                pembayarannya adalah : modal + (modal x 5)<br />
+                500 + (500 x 0.95) = 975<br />
+                anda akan mendapatkan 3000
         </div>
     </div>
 </div>
