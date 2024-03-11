@@ -24,9 +24,14 @@
   let client_listbet = [];
   let engine_time = 0;
   let engine_minbet = 0;
-  let engine_multiplier = 0;
+  let engine_multiplier_angka = 0;
+  let engine_multiplier_redblack = 0;
+  let engine_multiplier_line = 0;
+  let engine_status_game_redblackline = "N";
+  let engine_status_maintenance = "N";
   let engine_invoice = "Memuat...";
   let engine_status = "LOCK";
+  let isModalAlert = false;
 
   async function initTimezone() {
     const res = await fetch(path_api+"api/healthz");
@@ -59,7 +64,11 @@
           client_name = json.client_name;
           client_username = json.client_username;
           client_credit = json.client_credit;
-          engine_multiplier = json.engine_multiplier;
+          engine_multiplier_angka = json.engine_multiplier_angka;
+          engine_multiplier_redblack = json.engine_multiplier_redblack;
+          engine_multiplier_line = json.engine_multiplier_line;
+          engine_status_game_redblackline = json.engine_status_game_redblackline;
+          engine_status_maintenance = json.engine_status_maintenance;
           let record_listbet = json.client_listbet.record;
           // console.log(client_listbet.length)
           for (var i = 0; i < record_listbet.length; i++) {
@@ -73,7 +82,14 @@
                 },
             ];
           }
-          sse()
+          if(engine_status_maintenance == "Y"){
+            isModalAlert = true
+            flag_game = false
+          }else{
+            flag_game = true
+            sse()
+          }
+          
       }
   }
   function sse(){
@@ -100,31 +116,48 @@
  
   
 </script>
-<main class="container mx-auto px-2 mt-5 text-base-content   xl:mt-7 max-w-screen-xl  pb-5 h-fit lg:h-full">
+{#if engine_status_maintenance == "N"}
+  <main class="container mx-auto px-2 mt-5 text-base-content   xl:mt-7 max-w-screen-xl  pb-5 h-fit lg:h-full">
+    {#if flag_game}
+    <Home 
+      {path_api}  
+      {engine_time}  
+      {engine_invoice}  
+      {engine_status}  
+      {client_listbet}  
+      {client_ipaddress}  
+      {client_company}  
+      {client_name}  
+      {client_username}  
+      {client_credit}  
+      {engine_minbet}  
+      {engine_multiplier_angka}  
+      {engine_multiplier_redblack}  
+      {engine_multiplier_line}  
+      {engine_status_game_redblackline}  />
+    {/if}
+  </main>
+  <footer class="footer footer-center p-4 text-base-content mt-1 text-center select-none">
+    <div class="grid">
+      <p class="text-xs lg:text-sm text-center">
+        {version}
+        <br />
+        PowerBy
+      </p>
+      <img src="https://i.imgur.com/PNSe1ov.png" alt="SDSB TANGKAS" class="w-24 lg:w-28">
+    </div>
+  </footer>
+{/if}
 
-  {#if flag_game}
-  <Home 
-    {path_api}  
-    {engine_time}  
-    {engine_invoice}  
-    {engine_status}  
-    {client_listbet}  
-    {client_ipaddress}  
-    {client_company}  
-    {client_name}  
-    {client_username}  
-    {client_credit}  
-    {engine_minbet}  
-    {engine_multiplier}  />
-  {/if}
-</main>
-<footer class="footer footer-center p-4 text-base-content mt-1 text-center select-none">
-  <div class="grid">
-    <p class="text-xs lg:text-sm text-center">
-      {version}
-      <br />
-      PowerBy
-    </p>
-    <img src="https://i.imgur.com/PNSe1ov.png" alt="SDSB TANGKAS" class="w-24 lg:w-28">
-  </div>
-</footer>
+<input type="checkbox" id="my-modal-alert" class="modal-toggle" bind:checked={isModalAlert}>
+<div class="modal" on:click|self={()=>isModalAlert = false}>
+    <div class="modal-box relative w-11/12 max-w-lg overflow-auto select-none">
+        <label for="my-modal-alert" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+        <h3 class="text-xs lg:text-sm font-bold -mt-2">INFO</h3>
+        <div class="h-fit overflow-auto  mt-2" >
+          <p class="py-4 text-center">
+            Website Maintenance
+          </p>
+        </div>
+    </div>
+</div>

@@ -11,13 +11,17 @@ import (
 )
 
 type responsechecktoken struct {
-	Client_status     int         `json:"status"`
-	Client_company    string      `json:"client_company"`
-	Client_name       string      `json:"client_name"`
-	Client_username   string      `json:"client_username"`
-	Client_credit     int         `json:"client_credit"`
-	Engine_multiplier float32     `json:"engine_multiplier"`
-	Client_listbet    interface{} `json:"client_listbet"`
+	Client_status                   int         `json:"status"`
+	Client_company                  string      `json:"client_company"`
+	Client_name                     string      `json:"client_name"`
+	Client_username                 string      `json:"client_username"`
+	Client_credit                   int         `json:"client_credit"`
+	Engine_multiplier_angka         float32     `json:"engine_multiplier_angka"`
+	Engine_multiplier_redblack      float32     `json:"engine_multiplier_redblack"`
+	Engine_multiplier_line          float32     `json:"engine_multiplier_line"`
+	Engine_status_game_redblackline string      `json:"engine_status_game_redblackline"`
+	Engine_status_maintenance       string      `json:"engine_status_maintenance"`
+	Client_listbet                  interface{} `json:"client_listbet"`
 }
 type responsesavetransaksi struct {
 	Client_status      int    `json:"status"`
@@ -79,14 +83,18 @@ func CheckToken(c *fiber.Ctx) error {
 	result := resp.Result().(*responsechecktoken)
 	if result.Client_status == 200 {
 		return c.JSON(fiber.Map{
-			"status":            result.Client_status,
-			"client_name":       result.Client_name,
-			"client_username":   result.Client_username,
-			"client_credit":     result.Client_credit,
-			"engine_multiplier": result.Engine_multiplier,
-			"client_company":    result.Client_company,
-			"client_listbet":    result.Client_listbet,
-			"time":              time.Since(render_page).String(),
+			"status":                          result.Client_status,
+			"client_name":                     result.Client_name,
+			"client_username":                 result.Client_username,
+			"client_credit":                   result.Client_credit,
+			"engine_multiplier_angka":         result.Engine_multiplier_angka,
+			"engine_multiplier_redblack":      result.Engine_multiplier_redblack,
+			"engine_multiplier_line":          result.Engine_multiplier_line,
+			"engine_status_game_redblackline": result.Engine_status_game_redblackline,
+			"engine_status_maintenance":       result.Engine_status_maintenance,
+			"client_company":                  result.Client_company,
+			"client_listbet":                  result.Client_listbet,
+			"time":                            time.Since(render_page).String(),
 		})
 	} else {
 		result_error := resp.Error().(*responseerror)

@@ -19,7 +19,10 @@
     export let client_listbet = [];
     export let client_credit = 0;
     export let engine_minbet = 0;
-    export let engine_multiplier = 0;
+    export let engine_multiplier_angka = 0;
+    export let engine_multiplier_redblack = 0;
+    export let engine_multiplier_line = 0;
+    export let engine_status_game_redblackline = "";
     
     let flag_toast = false;
     let toast_message = "";
@@ -89,7 +92,7 @@
         const mergeResult = [...bet_multiple, ...redblack];
         let total_bet_multiple = mergeResult.length
         let total_bayar = parseInt(total_bet_multiple)*parseInt(field_bet)
-       
+        let multiplier = 0;
         if(parseInt(engine_time) < 5){
             flag = false
             msg_err = "Timeout"
@@ -122,29 +125,36 @@
             
             for(let i=0;i<total_bet_multiple;i++){
                 let tipebet = "ANGKA"
+                multiplier = parseFloat(engine_multiplier_angka)
                 if(mergeResult[i] == "RED" || mergeResult[i] == "BLACK"){
                     tipebet = "REDBLACK"
+                    multiplier = parseFloat(engine_multiplier_redblack)
                 }
                 if(mergeResult[i] == "GANJIL" || mergeResult[i] == "GENAP"){
                     tipebet = "REDBLACK"
+                    multiplier = parseFloat(engine_multiplier_redblack)
                 }
                 if(mergeResult[i] == "KECIL" || mergeResult[i] == "BESAR"){
                     tipebet = "REDBLACK"
+                    multiplier = parseFloat(engine_multiplier_redblack)
                 }
                 if(mergeResult[i] == "LINE1" || mergeResult[i] == "LINE2"){
                     tipebet = "LINE"
+                    multiplier = parseFloat(engine_multiplier_line)
                 }
                 if(mergeResult[i] == "LINE3" || mergeResult[i] == "LINE4"){
                     tipebet = "LINE"
+                    multiplier = parseFloat(engine_multiplier_line)
                 }
                 if(mergeResult[i] == "LINE5"){
                     tipebet = "LINE"
+                    multiplier = parseFloat(engine_multiplier_line)
                 }
                 const data = {
                     tipebet: tipebet,
                     nomor: mergeResult[i],
                     bet: parseInt(field_bet),
-                    multiplier: parseFloat(engine_multiplier)
+                    multiplier: parseFloat(multiplier)
                 };
                 keranjang = [data, ...keranjang];
             }
@@ -662,6 +672,7 @@
         </section>
         <section class="grid grid-cols-1 w-full gap-2 mt-2">
             <div class="h-[350px] w-full overflow-auto">
+                {#if engine_status_game_redblackline == "Y"}
                 <div class="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-6 xl:grid-cols-6 lg:grid-cols-6 gap-1">
                     <button  on:click={() => {
                         handleclick_redblack("KECIL");
@@ -699,6 +710,7 @@
                         handleclick_line("LINE5");
                     }} class="{btn_line5_css}">LINE<br />5</button>
                 </div>
+                {/if}
                 <div class="grid grid-cols-6 mt-2 sm:grid-cols-10 md:grid-cols-10 xl:grid-cols-10 lg:grid-cols-10 gap-1 w-full">
                     {#each nomor as rec}
                     <label class="swap text-6xl">
@@ -852,17 +864,17 @@
                 <tr>
                     <td class="text-xs lg:text-sm">HADIAH ANGKA (00 - 99)</td>
                     <td class="text-xs lg:text-sm">:</td>
-                    <td class="text-xs lg:text-sm">10 x</td>
+                    <td class="text-xs lg:text-sm">{engine_multiplier_angka} x</td>
                 </tr>
                 <tr>
                     <td class="text-xs lg:text-sm align-top">HADIAH BESAR/KECIL,GENAP/GANJIL, RED/BLACK</td>
                     <td class="text-xs lg:text-sm align-top">:</td>
-                    <td class="text-xs lg:text-sm align-top">0.95 x</td>
+                    <td class="text-xs lg:text-sm align-top">{engine_multiplier_redblack} x</td>
                 </tr>
                 <tr>
                     <td class="text-xs lg:text-sm align-top">HADIAH LINE 1,2,3,4,5</td>
                     <td class="text-xs lg:text-sm align-top">:</td>
-                    <td class="text-xs lg:text-sm align-top">2 x</td>
+                    <td class="text-xs lg:text-sm align-top">{engine_multiplier_line} x</td>
                 </tr>
                 <tr><td colspan="3">&nbsp;</td></tr>
                 <tr>
