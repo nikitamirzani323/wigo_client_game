@@ -253,13 +253,13 @@
                 
                 switch(record[i]["invoiceclient_status"]){
                     case "LOSE":
-                        status_css = "bg-primary text-white";
+                        status_css = "badge badge-primary";
                         break;
                     case "WIN":
-                        status_css = "bg-success text-white";
+                        status_css = "badge badge-success";
                         break;
                     case "RUNNING":
-                        status_css = "bg-accent text-white";
+                        status_css = "badge badge-warning";
                         break;
                 }
 
@@ -638,13 +638,13 @@
                 </div>
             </section>
             <section class="w-full ">
-                <p class="w-full text-xs lg:text-sm text-right select-none">
+                <p class="w-full text-[12px] text-right select-none mt-2">
                     Asia/Jakarta <br />
                     {clockmachine}  WIB (+7)<br>
                     {client_name} <br />
                     {client_ipaddress}
                 </p>
-                <div class="w-full text-xs lg:text-sm text-right select-none">
+                <div class="w-full text-[12px] text-right select-none">
                     CREDIT : IDR <span class="link-accent" style="--value:15;">{new Intl.NumberFormat().format(client_credit)}</span>
                 </div>
             </section>
