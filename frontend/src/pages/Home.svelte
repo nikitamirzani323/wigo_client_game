@@ -263,6 +263,10 @@
         btn_red_flag = false
         btn_black_css = "btn"
         btn_black_flag = false
+        btn_ganjil_css = "btn"
+        btn_ganjil_flag = false
+        btn_genap_css = "btn"
+        btn_genap_flag = false
     };
     const call_allinvoice = () => {
         fetch_invoiceall()
