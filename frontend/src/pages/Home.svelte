@@ -8,28 +8,27 @@
     dayjs.extend(timezone);
    
     export let path_api = "";
-    export let version = "";
     export let engine_time = 0
     export let engine_invoice = ""
     export let engine_status = "LOCK"
+    export let client_company = ""
+    export let client_username = ""
+    export let client_timezone = "Asia/Jakarta"
+    export let client_name = "";
+    export let client_ipaddress = "";
+    export let client_listbet = [];
+    export let client_credit = 0;
+    export let engine_minbet = 0;
+    export let engine_multiplier = 0;
     
     let flag_toast = false;
     let toast_message = "";
-    let client_company = "nuke"
-    let client_username = "developer"
-    let client_timezone = "Asia/Jakarta"
-    let client_name = "Developer";
-    let client_ipaddress = "127.127.127.127";
-    let client_credit = 10000;
     
-    let engine_minbet = 500
-    let engine_maxbet = 2000000
-    let engine_multiplier = 5.2
     let clockmachine = "";
     
     let flag_btnbuy = true;
     let field_maxlength_bet = length
-    let field_bet = engine_minbet
+    let field_bet = 0
     let field_nomor = ""
     
     let list_invoice = []
@@ -37,61 +36,19 @@
     let keranjang = [];
     let flag_listinvoice = true;
     let flag_listresult = false;
-    let bet_multiple = ""
+    let bet_multiple = []
     let isModalMinBet = false;
     let isModalInfo = false;
-    let client_listbet = [
-        {id:500,val:"500"},
-        {id:1000,val:"1000"},
-        {id:1500,val:"1500"},
-        {id:2000,val:"2000"},
-        {id:2500,val:"2500"},
-        {id:3000,val:"3000"},
-        {id:3500,val:"3500"},
-        {id:4000,val:"4000"},
-        {id:4500,val:"4500"},
-        {id:5000,val:"5000"},
-        {id:5500,val:"5500"},
-        {id:6000,val:"6000"},
-        {id:6500,val:"6500"},
-        {id:7000,val:"7000"},
-        {id:7500,val:"7500"},
-        {id:8000,val:"8000"},
-        {id:8500,val:"8500"},
-        {id:9000,val:"9000"},
-        {id:9500,val:"9500"},
-        {id:10000,val:"10000"},
-        {id:15000,val:"15000"},
-        {id:20000,val:"20000"},
-        {id:25000,val:"25000"},
-        {id:30000,val:"30000"},
-        {id:35000,val:"35000"},
-        {id:40000,val:"40000"},
-        {id:45000,val:"45000"},
-        {id:50000,val:"50000"},
-        {id:55000,val:"55000"},
-        {id:60000,val:"60000"},
-        {id:65000,val:"65000"},
-        {id:70000,val:"70000"},
-        {id:75000,val:"75000"},
-        {id:80000,val:"80000"},
-        {id:85000,val:"85000"},
-        {id:90000,val:"90000"},
-        {id:95000,val:"95000"},
-        {id:100000,val:"100000"},
-        {id:200000,val:"200000"},
-        {id:300000,val:"300000"},
-        {id:400000,val:"400000"},
-        {id:500000,val:"500000"},
-        {id:600000,val:"600000"},
-        {id:700000,val:"700000"},
-        {id:800000,val:"800000"},
-        {id:900000,val:"900000"},
-        {id:1000000,val:"1000000"},
-        {id:1500000,val:"1500000"},
-        {id:2000000,val:"2000000"},
-        {id:2500000,val:"2500000"},
-    ]
+    
+    let redblack = []
+    let btn_red_css = "btn btn-error"
+    let btn_red_flag = false
+    let btn_black_css = "btn"
+    let btn_black_flag = false
+    let btn_ganjil_css = "btn"
+    let btn_ganjil_flag = false
+    let btn_genap_css = "btn"
+    let btn_genap_flag = false
 
     function updateClock() {
       let endtime = dayjs().tz(client_timezone).format("DD MMM YYYY | HH:mm:ss");
@@ -103,14 +60,18 @@
     }
     $: {
         setInterval(updateClock, 1000);
-        fetch_invoiceall()
+        field_bet = engine_minbet
+        if(client_username != "" && client_company != ""){
+            fetch_invoiceall()
+        }
         
     }
     async function call_bayar() {
         keranjang = [];
         let flag = true;
         let msg_err = ""
-        let total_bet_multiple = bet_multiple.length
+        const mergeResult = [...bet_multiple, ...redblack];
+        let total_bet_multiple = mergeResult.length
         let total_bayar = parseInt(total_bet_multiple)*parseInt(field_bet)
        
         if(parseInt(engine_time) < 5){
@@ -129,10 +90,7 @@
             flag = false
             msg_err = "Minimal Bet " + engine_minbet
         }
-        if(parseInt(field_bet) > parseInt(engine_maxbet)){
-            flag = false
-            msg_err = "Maximal Bet " + engine_maxbet
-        }
+       
         if(parseInt(field_bet) > parseInt(client_credit)){
             flag = false
             msg_err = "Credit tidak cukup "
@@ -144,9 +102,16 @@
         // flag = false;
         if(flag){
             flag_btnbuy = false;
+            console.log(mergeResult)
+            
             for(let i=0;i<total_bet_multiple;i++){
+                let tipebet = "ANGKA"
+                if(mergeResult[i] == "RED" || mergeResult[i] == "BLACK"){
+                    tipebet = "REDBLACK"
+                }
                 const data = {
-                    nomor: bet_multiple[i],
+                    tipebet: tipebet,
+                    nomor: mergeResult[i],
                     bet: parseInt(field_bet),
                     multiplier: parseFloat(engine_multiplier)
                 };
@@ -178,8 +143,7 @@
                 flag_toast = true
                 flag_btnbuy = true;
                 toast_message = json.message
-                bet_multiple = ""
-                keranjang = [];
+                call_reset()
             }
         }else{
             flag_toast = true
@@ -197,7 +161,7 @@
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                invoice_company: client_company,
+                invoice_company: client_company.toLowerCase(),
             }),
         });
         const json = await res.json();
@@ -231,7 +195,7 @@
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                invoice_company: client_company,
+                invoice_company: client_company.toLowerCase(),
                 Invoice_username: client_username,
             }),
         });
@@ -291,8 +255,14 @@
     
     const call_reset = () => {
         keranjang = [];
-        bet_multiple = ""
+        bet_multiple = []
+        redblack = []
         field_bet = engine_minbet
+
+        btn_red_css = "btn btn-error"
+        btn_red_flag = false
+        btn_black_css = "btn"
+        btn_black_flag = false
     };
     const call_allinvoice = () => {
         fetch_invoiceall()
@@ -300,108 +270,172 @@
     const call_listresult = () => {
         fetch_listresult()
     };
-   
+    
+    const handleclick_redblack = (e) => {
+        switch(e){
+            case "RED":
+                if(btn_red_flag == false){
+                    btn_red_css = "btn btn-outline"
+                    btn_red_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_red_css = "btn btn-error"
+                    btn_red_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "RED") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "BLACK":
+                if(btn_black_flag == false){
+                    btn_black_css = "btn btn-outline"
+                    btn_black_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_black_css = "btn"
+                    btn_black_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "BLACK") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "GANJIL":
+                if(btn_ganjil_flag == false){
+                    btn_ganjil_css = "btn btn-outline"
+                    btn_ganjil_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_ganjil_css = "btn"
+                    btn_ganjil_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "GANJIL") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+            case "GENAP":
+                if(btn_genap_flag == false){
+                    btn_genap_css = "btn btn-outline"
+                    btn_genap_flag = true;
+                    redblack.push(e)
+                }else{
+                    btn_genap_css = "btn"
+                    btn_genap_flag = false
+                    for (let i = 0; i < redblack.length; i++) { 
+                        if (redblack[i] === "GENAP") { 
+                            redblack.splice(i, 1); 
+                        } 
+                    }
+                }
+                break;
+        }
+    };
     let nomor = [
-        {id:"00",tipe:"RED",css:"btn-error"},
-        {id:"01",tipe:"BLACK",css:""},
-        {id:"02",tipe:"RED",css:"btn-error"},
-        {id:"03",tipe:"BLACK",css:""},
-        {id:"04",tipe:"RED",css:"btn-error"},
-        {id:"05",tipe:"BLACK",css:""},
-        {id:"06",tipe:"RED",css:"btn-error"},
-        {id:"07",tipe:"BLACK",css:""},
-        {id:"08",tipe:"RED",css:"btn-error"},
-        {id:"09",tipe:"BLACK",css:""},
-        {id:"10",tipe:"BLACK",css:""},
-        {id:"11",tipe:"RED",css:"btn-error"},
-        {id:"12",tipe:"BLACK",css:""},
-        {id:"13",tipe:"RED",css:"btn-error"},
-        {id:"14",tipe:"BLACK",css:""},
-        {id:"15",tipe:"RED",css:"btn-error"},
-        {id:"16",tipe:"BLACK",css:""},
-        {id:"17",tipe:"RED",css:"btn-error"},
-        {id:"18",tipe:"BLACK",css:""},
-        {id:"19",tipe:"RED",css:"btn-error"},
-        {id:"20",tipe:"RED",css:"btn-error"},
-        {id:"21",tipe:"BLACK",css:""},
-        {id:"22",tipe:"RED",css:"btn-error"},
-        {id:"23",tipe:"BLACK",css:""},
-        {id:"24",tipe:"RED",css:"btn-error"},
-        {id:"25",tipe:"BLACK",css:""},
-        {id:"26",tipe:"RED",css:"btn-error"},
-        {id:"27",tipe:"BLACK",css:""},
-        {id:"28",tipe:"RED",css:"btn-error"},
-        {id:"29",tipe:"BLACK",css:""},
-        {id:"30",tipe:"BLACK",css:""},
-        {id:"31",tipe:"RED",css:"btn-error"},
-        {id:"32",tipe:"BLACK",css:""},
-        {id:"33",tipe:"RED",css:"btn-error"},
-        {id:"34",tipe:"BLACK",css:""},
-        {id:"35",tipe:"RED",css:"btn-error"},
-        {id:"36",tipe:"BLACK",css:""},
-        {id:"37",tipe:"RED",css:"btn-error"},
-        {id:"38",tipe:"BLACK",css:""},
-        {id:"39",tipe:"RED",css:"btn-error"},
-        {id:"40",tipe:"RED",css:"btn-error"},
-        {id:"41",tipe:"BLACK",css:""},
-        {id:"42",tipe:"RED",css:"btn-error"},
-        {id:"43",tipe:"BLACK",css:""},
-        {id:"44",tipe:"RED",css:"btn-error"},
-        {id:"45",tipe:"BLACK",css:""},
-        {id:"46",tipe:"RED",css:"btn-error"},
-        {id:"47",tipe:"BLACK",css:""},
-        {id:"48",tipe:"RED",css:"btn-error"},
-        {id:"49",tipe:"BLACK",css:""},
-        {id:"50",tipe:"BLACK",css:""},
-        {id:"51",tipe:"RED",css:"btn-error"},
-        {id:"52",tipe:"BLACK",css:""},
-        {id:"53",tipe:"RED",css:"btn-error"},
-        {id:"54",tipe:"BLACK",css:""},
-        {id:"55",tipe:"RED",css:"btn-error"},
-        {id:"56",tipe:"BLACK",css:""},
-        {id:"57",tipe:"RED",css:"btn-error"},
-        {id:"58",tipe:"BLACK",css:""},
-        {id:"59",tipe:"RED",css:"btn-error"},
-        {id:"60",tipe:"RED",css:"btn-error"},
-        {id:"61",tipe:"BLACK",css:""},
-        {id:"62",tipe:"RED",css:"btn-error"},
-        {id:"63",tipe:"BLACK",css:""},
-        {id:"64",tipe:"RED",css:"btn-error"},
-        {id:"65",tipe:"BLACK",css:""},
-        {id:"66",tipe:"RED",css:"btn-error"},
-        {id:"67",tipe:"BLACK",css:""},
-        {id:"68",tipe:"RED",css:"btn-error"},
-        {id:"69",tipe:"BLACK",css:""},
-        {id:"70",tipe:"BLACK",css:""},
-        {id:"71",tipe:"RED",css:"btn-error"},
-        {id:"72",tipe:"BLACK",css:""},
-        {id:"73",tipe:"RED",css:"btn-error"},
-        {id:"74",tipe:"BLACK",css:""},
-        {id:"75",tipe:"RED",css:"btn-error"},
-        {id:"76",tipe:"BLACK",css:""},
-        {id:"77",tipe:"RED",css:"btn-error"},
-        {id:"78",tipe:"BLACK",css:""},
-        {id:"79",tipe:"RED",css:"btn-error"},
-        {id:"80",tipe:"RED",css:"btn-error"},
-        {id:"81",tipe:"BLACK",css:""},
-        {id:"82",tipe:"RED",css:"btn-error"},
-        {id:"83",tipe:"BLACK",css:""},
-        {id:"84",tipe:"RED",css:"btn-error"},
-        {id:"85",tipe:"BLACK",css:""},
-        {id:"86",tipe:"RED",css:"btn-error"},
-        {id:"87",tipe:"BLACK",css:""},
-        {id:"88",tipe:"RED",css:"btn-error"},
-        {id:"89",tipe:"BLACK",css:""},
-        {id:"90",tipe:"BLACK",css:""},
-        {id:"91",tipe:"RED",css:"btn-error"},
-        {id:"92",tipe:"BLACK",css:""},
-        {id:"93",tipe:"RED",css:"btn-error"},
-        {id:"94",tipe:"BLACK",css:""},
-        {id:"95",tipe:"RED",css:"btn-error"},
-        {id:"96",tipe:"BLACK",css:""},
-        {id:"97",tipe:"RED",css:"btn-error"},
-        {id:"98",tipe:"BLACK",css:""},
-        {id:"99",tipe:"RED",css:"btn-error"},
+        {id:"00",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"01",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"02",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"03",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"04",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"05",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"06",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"07",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"08",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"09",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"10",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"11",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"12",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"13",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"14",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"15",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"16",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"17",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"18",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"19",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"20",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"21",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"22",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"23",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"24",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"25",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"26",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"27",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"28",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"29",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"30",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"31",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"32",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"33",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"34",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"35",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"36",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"37",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"38",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"39",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"40",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"41",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"42",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"43",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"44",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"45",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"46",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"47",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"48",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"49",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"50",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"51",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"52",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"53",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"54",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"55",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"56",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"57",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"58",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"59",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"60",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"61",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"62",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"63",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"64",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"65",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"66",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"67",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"68",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"69",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"70",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"71",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"72",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"73",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"74",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"75",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"76",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"77",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"78",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"79",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"80",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"81",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"82",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"83",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"84",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"85",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"86",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"87",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"88",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"89",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"90",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"91",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"92",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"93",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"94",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"95",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"96",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"97",tipeangka:"GANJIL",tipe:"BLACK",css:""},
+        {id:"98",tipeangka:"GENAP",tipe:"RED",css:"btn-error"},
+        {id:"99",tipeangka:"GANJIL",tipe:"BLACK",css:""},
     ]
   </script>
  
@@ -456,12 +490,26 @@
         </section>
         <section class="grid grid-cols-1 w-full gap-2 mt-2">
             <div class="h-[350px] w-full overflow-auto">
-                <div class="grid grid-cols-6 sm:grid-cols-10 md:grid-cols-10 xl:grid-cols-10 lg:grid-cols-10 gap-1 w-full">
+                <div class="grid grid-cols-4 gap-2">
+                    <button  on:click={() => {
+                        handleclick_redblack("GANJIL");
+                    }} class="{btn_ganjil_css}">GANJIL</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("BLACK");
+                    }} class="{btn_black_css}">BLACK</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("RED");
+                    }} class="{btn_red_css}">RED</button>
+                    <button  on:click={() => {
+                        handleclick_redblack("GENAP");
+                    }} class="{btn_genap_css}">GENAP</button>
+                </div>
+                <div class="grid grid-cols-6 mt-2 sm:grid-cols-10 md:grid-cols-10 xl:grid-cols-10 lg:grid-cols-10 gap-1 w-full">
                     {#each nomor as rec}
-                    <label class="swap">
+                    <label class="swap text-6xl">
                         <input bind:group={bet_multiple} type="checkbox" value="{rec.id}" />
                         <div class="swap-on btn btn-outline">{rec.id}</div>
-                        <div class="swap-off btn  ">{rec.id}</div>
+                        <div class="swap-off btn {rec.css} ">{rec.id}</div>
                     </label>
                     {/each}
                 </div>
@@ -537,7 +585,7 @@
                     {#each list_invoice as rec}
                     <tr class="border-none">
                         <td class="text-xs  text-center whitespace-nowrap align-top">
-                            <span class="{rec.invoiceclient_status_css} p-1 text-xs lg:text-sm  uppercase  rounded-lg w-20 ">{rec.invoiceclient_status}</span>
+                            <span class="{rec.invoiceclient_status_css} p-1 text-xs lg:text-sm  uppercase  rounded-lg w-20 text-black ">{rec.invoiceclient_status}</span>
                         </td>
                         <td class="text-xs  text-left whitespace-nowrap align-top border-b-transparent">{rec.invoiceclient_id}</td>
                         <td class="text-xs  text-center whitespace-nowrap align-top">{rec.invoiceclient_date}</td>
@@ -590,11 +638,11 @@
         <h3 class="text-xs lg:text-sm font-bold -mt-2">COIN BET</h3>
         <div class="h-fit overflow-auto  mt-2" >
             <div class="grid grid-cols-3 lg:grid-cols-5 mt-5 gap-2 justify-self-center">
-              {#each client_listbet as rec}
+                {#each client_listbet as rec}
                 <div on:click={() => {
-                    handle_minbet(rec.id);
+                    handle_minbet(rec.money_bet);
                   }} 
-                  class="btn btn-xs lg:btn-sm btn-outline btn-success cursor-pointer">{new Intl.NumberFormat().format(rec.val)}</div>
+                  class="btn btn-xs lg:btn-sm btn-outline btn-success cursor-pointer">{new Intl.NumberFormat().format(rec.money_bet)}</div>
               {/each}
             </div>
             
@@ -608,9 +656,40 @@
         <label for="my-modal-infogame" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
         <h3 class="text-xs lg:text-sm font-bold -mt-2">INFO</h3>
         <div class="h-fit overflow-auto  mt-2" >
-            <p class="text-xs">
-                ASDASD
-            </p>
+            <table class="table table-xs">
+                <tr>
+                    <td width="30%">MIN BET</td>
+                    <td width="1%">:</td>
+                    <td width="*">{new Intl.NumberFormat().format(field_bet)}</td>
+                </tr>
+                <tr>
+                    <td>HADIAH ANGKA (00 - 99)</td>
+                    <td>:</td>
+                    <td>x 5</td>
+                </tr>
+                <tr>
+                    <td>HADIAH GENAP/GANJIL, RED/BLACK</td>
+                    <td>:</td>
+                    <td>x 0.95</td>
+                </tr>
+            </table>
+            <p class="text-[12px] mt-2">
+                <b class="uppercase font-bold">Cara Bermain :</b> <br />
+                Pilih angka 00 - 99 <br />
+                Nomor akan diundi setelah waktu 0 Second,  <br />
+                jika nomor anda kena, maka anda akan mendapatkan: modal + (modal * 5)
+                <br /><br />
+                Contoh :<br />
+                Anda memasang nomor 25, dengan bet 500<br />
+                keluaran adalah nomor 25<br />
+                jadi bet anda menang <br />
+                pembayarannya adalah : modal + (modal x 5)<br />
+                500 + (500 x 5) = 3000<br />
+                anda akan mendapatkan 3000
+                <br /><br />
+                Anda memasang nomor 10, dengan bet 500<br />
+                keluaran adalah nomor 00<br />
+                jadi bet anda kalah <br />
         </div>
     </div>
 </div>
